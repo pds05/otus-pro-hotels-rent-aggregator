@@ -1,0 +1,23 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: hotels
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/hotels_db
+    username: hotels_admin
+    password: hotels_admin
+    jpa:
+      show-sql: true
+      open-in-view: false
+      properties:
+       hibernate:
+        format_sql: true
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
+#    org.hibernate.orm.jdbc.extract: TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
