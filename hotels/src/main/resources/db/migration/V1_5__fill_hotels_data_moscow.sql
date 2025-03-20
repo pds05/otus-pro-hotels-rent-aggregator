@@ -321,7 +321,7 @@ values ((select hr.id
            and h.title = 'Отель Метрополь'),
         (select id from hotel_room_amenities where title = 'Красивый вид'));;
 
-insert into hotel_rooms_rate (title, hotel_rooms_id, feed_type_id, price, payment_type, is_refund)
+insert into hotel_room_rate (title, hotel_rooms_id, feed_type_id, price, payment_type, is_refund)
 values ('Супериор',
         (select hr.id
          from hotel_rooms hr

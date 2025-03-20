@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+@ToString(exclude = "userOrder")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +26,6 @@ public class OrderGuest {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @ColumnDefault("''")
     @Column(name = "middle_name", length = 50)
     private String middleName;
 
@@ -38,7 +38,11 @@ public class OrderGuest {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_order_id", nullable = false)
+
+    @JoinColumns(value = {
+            @JoinColumn(name = "user_order_id", nullable = false),
+            @JoinColumn(name = "user_profile_id", nullable = false)
+    })
     private UserOrder userOrder;
 
 }

@@ -8,16 +8,17 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "hotel_rooms_rate")
-public class HotelRoomsRate {
+@Table(name = "hotel_room_rate")
+public class HotelRoomRate {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hotel_rooms_rate_id_gen")
-    @SequenceGenerator(name = "hotel_rooms_rate_id_gen", sequenceName = "hotel_rooms_rate_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hotel_room_rate_id_gen")
+    @SequenceGenerator(name = "hotel_room_rate_id_gen", sequenceName = "hotel_room_rate_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 

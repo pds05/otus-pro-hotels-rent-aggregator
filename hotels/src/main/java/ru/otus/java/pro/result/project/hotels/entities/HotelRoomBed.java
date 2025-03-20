@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+@ToString(exclude = {"hotelRoom", "primaryKey"})
 @Getter
 @Setter
 @NoArgsConstructor

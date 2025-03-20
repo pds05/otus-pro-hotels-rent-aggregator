@@ -10,6 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@ToString(exclude = {"userOrders", "hotelRoomRates"})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -61,7 +62,10 @@ public class HotelRoom {
     inverseJoinColumns = @JoinColumn(name = "hotel_room_amenity_id"))
     private Set<HotelRoomAmenity> hotelRoomAmenities = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = HotelRoomsRate_.HOTEL_ROOM)
-    private Set<HotelRoomsRate> hotelRoomsRates = new LinkedHashSet<>();
+    @OneToMany(mappedBy = HotelRoomRate_.HOTEL_ROOM)
+    private Set<HotelRoomRate> hotelRoomRates = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = UserOrder_.HOTEL_ROOM)
+    private Set<UserOrder> userOrders = new LinkedHashSet<>();
 
 }

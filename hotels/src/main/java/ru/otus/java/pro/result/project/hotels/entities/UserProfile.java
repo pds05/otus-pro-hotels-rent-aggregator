@@ -3,12 +3,20 @@ package ru.otus.java.pro.result.project.hotels.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@ToString(exclude = "userOrders")
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,10 +25,9 @@ import java.util.Set;
 @Table(name = "user_profile")
 public class UserProfile {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_profile_id_gen")
-    @SequenceGenerator(name = "user_profile_id_gen", sequenceName = "user_profile_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private String id;
 
     @Column(name = "login", length = 50)
     private String login;
@@ -34,12 +41,8 @@ public class UserProfile {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @ColumnDefault("''")
     @Column(name = "middle_name", length = 50)
     private String middleName;
-
-    @Column(name = "gender", nullable = false, length = 20)
-    private String gender;
 
     @Column(name = "birthday_date")
     private LocalDate birthdayDate;
@@ -50,24 +53,23 @@ public class UserProfile {
     @Column(name = "email")
     private String email;
 
+    @ColumnDefault(value = "true")
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column(name = "is_send_notification")
-    private Boolean isSendNotification;
-
-    @Column(name = "bonus_value")
-    private Integer bonusValue;
-
-    @ColumnDefault("now()")
+    @CreationTimestamp
     @Column(name = "created_at")
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
-    @ColumnDefault("now()")
+    @UpdateTimestamp
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "userProfile")
     private Set<UserOrder> userOrders = new LinkedHashSet<>();
+
+    public String printFullName(){
+        return Stream.of(lastName, firstName, middleName).filter(Objects::nonNull).collect(Collectors.joining( " "));
+    }
 
 }

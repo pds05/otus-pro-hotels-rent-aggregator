@@ -3,6 +3,7 @@ package ru.otus.java.pro.result.project.hotels.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor

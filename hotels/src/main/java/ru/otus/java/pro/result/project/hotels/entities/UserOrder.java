@@ -1,17 +1,19 @@
 package ru.otus.java.pro.result.project.hotels.entities;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
+import ru.otus.java.pro.result.project.hotels.lib.UserOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,34 +21,31 @@ import java.util.Set;
 @Entity
 @Table(name = "user_orders")
 public class UserOrder {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_orders_id_gen")
-    @SequenceGenerator(name = "user_orders_id_gen", sequenceName = "user_orders_id_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    @ColumnDefault("now()")
-    @Column(name = "order_date")
-    private Instant orderDate;
+    @EmbeddedId
+    private UserOrderKey userOrderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_room_id", referencedColumnName = "id")
+    private HotelRoom hotelRoom;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_room_rate_id", referencedColumnName = "id")
+    private HotelRoomRate hotelRoomRate;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_profile_id")
+    @JoinColumn(name = "user_profile_id", insertable = false, updatable = false)
     private UserProfile userProfile;
 
-    @Column(name = "date_from")
-    private LocalDate dateFrom;
+    @Column(name = "date_in")
+    private LocalDate dateIn;
 
-    @Column(name = "date_to")
-    private LocalDate dateTo;
+    @Column(name = "date_out")
+    private LocalDate dateOut;
 
-    @ColumnDefault("false")
-    @Column(name = "is_complete")
-    private Boolean isComplete;
-
-    @ColumnDefault("false")
-    @Column(name = "is_canceled")
-    private Boolean isCanceled;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private UserOrderStatus status;
 
     @Column(name = "order_price", precision = 10, scale = 2)
     private BigDecimal orderPrice;
@@ -54,10 +53,15 @@ public class UserOrder {
     @Column(name = "description")
     private String description;
 
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @OneToMany(mappedBy = "userOrder")
     private Set<OrderGuest> orderGuests = new LinkedHashSet<>();
-
-    @ManyToMany
-    private Set<HotelRoom> hotelRooms = new LinkedHashSet<>();
 
 }

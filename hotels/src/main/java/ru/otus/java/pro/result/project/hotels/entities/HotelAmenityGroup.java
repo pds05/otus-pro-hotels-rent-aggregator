@@ -7,6 +7,7 @@ import lombok.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@ToString(exclude = "hotelAmenities")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -30,15 +30,16 @@ import java.util.Set;
                         attributeNodes = {
                                 @NamedAttributeNode(value = HotelRoom_.HOTEL_ROOM_AMENITIES),
                                 @NamedAttributeNode(value = HotelRoom_.HOTEL_ROOM_BEDS, subgraph = "Graph.Hotel.HotelRoom.HotelRoomBed.bedType"),
-                                @NamedAttributeNode(value = HotelRoom_.HOTEL_ROOMS_RATES, subgraph = "Graph.Hotel.HotelRoom.HotelRoomsRate.feedType")
+                                @NamedAttributeNode(value = HotelRoom_.HOTEL_ROOM_RATES, subgraph = "Graph.Hotel.HotelRoom.HotelRoomsRate.feedType")
 
                         }),
                 @NamedSubgraph(name = "Graph.Hotel.HotelRoom.HotelRoomBed.bedType",
                         attributeNodes = @NamedAttributeNode(HotelRoomBed_.BED_TYPE)),
                 @NamedSubgraph(name = "Graph.Hotel.HotelRoom.HotelRoomsRate.feedType",
-                        attributeNodes = @NamedAttributeNode(HotelRoomsRate_.FEED_TYPE))
+                        attributeNodes = @NamedAttributeNode(HotelRoomRate_.FEED_TYPE))
         })
 
+@ToString(exclude = "hotelRooms")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -128,5 +129,9 @@ public class Hotel {
 
     public void removeHotelAmenities(HotelsHotelAmenity hotelAmenity) {
         hotelsHotelAmenities.removeIf(amenity -> amenity.getPrimaryKey().equals(hotelAmenity.getPrimaryKey()));
+    }
+
+    public String printAddress(){
+        return String.format("%s, %s", city.getTitle(), location);
     }
 }

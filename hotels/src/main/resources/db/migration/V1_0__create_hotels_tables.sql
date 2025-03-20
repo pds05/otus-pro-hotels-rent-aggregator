@@ -146,7 +146,7 @@ create table if not exists hotel_rooms_hotel_room_amenities_rel
     CONSTRAINT fk_hotel_amenity_groups_rel FOREIGN KEY (hotel_room_amenity_id) REFERENCES hotel_room_amenities (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-create table if not exists hotel_rooms_rate
+create table if not exists hotel_room_rate
 (
     id serial primary key,
     hotel_rooms_id int,
@@ -155,6 +155,6 @@ create table if not exists hotel_rooms_rate
     price          numeric(10, 2) not null,
     payment_type   varchar(50),
     is_refund      boolean,
-    CONSTRAINT fk_hotel_rooms_hotel_rooms_rate FOREIGN KEY (hotel_rooms_id) references hotel_rooms (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_hotel_rooms_rate_ct_hotel_feed_types FOREIGN KEY (feed_type_id) references ct_hotel_feed_types (id) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT fk_hotel_rooms_hotel_room_rate FOREIGN KEY (hotel_rooms_id) references hotel_rooms (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_hotel_room_rate_ct_hotel_feed_types FOREIGN KEY (feed_type_id) references ct_hotel_feed_types (id) ON DELETE CASCADE ON UPDATE CASCADE
 )
