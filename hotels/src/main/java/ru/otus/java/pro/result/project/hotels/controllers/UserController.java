@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/order/cancel2")
+    @GetMapping("/order/cancel")
     public UserOrderDto cancelUserOrder(@OrderValid @RequestParam String order) {
         return UserOrderDto.mapping(userOrderService.canceledUserOrder(order));
     }

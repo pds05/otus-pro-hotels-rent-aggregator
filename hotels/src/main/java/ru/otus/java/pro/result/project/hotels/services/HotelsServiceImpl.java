@@ -2,6 +2,8 @@ package ru.otus.java.pro.result.project.hotels.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.otus.java.pro.result.project.hotels.daos.HotelDao;
+import ru.otus.java.pro.result.project.hotels.dtos.HotelDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.Hotel;
 import ru.otus.java.pro.result.project.hotels.entities.HotelRoom;
 import ru.otus.java.pro.result.project.hotels.exceptions.ResourceNotFoundException;
@@ -16,11 +18,18 @@ import java.util.Optional;
 public class HotelsServiceImpl implements HotelsService {
     private final HotelsRepository hotelsRepository;
     private final HotelRoomsRepository hotelRoomsRepository;
+    private final HotelDao hotelDao;
 
     @Override
     public List<Hotel> findHotels(String city) {
         return hotelsRepository.findAllByCity_Title(city);
     }
+
+    @Override
+    public List<Hotel> findFilterHotels(HotelDtoRq hotelDtoRq) {
+        return hotelDao.getFilterHotels(hotelDtoRq);
+    }
+
 
     @Override
     public Optional<Hotel> findHotel(int hotelId, String city) {

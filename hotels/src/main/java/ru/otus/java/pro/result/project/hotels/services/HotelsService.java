@@ -1,6 +1,7 @@
 package ru.otus.java.pro.result.project.hotels.services;
 
 import org.springframework.stereotype.Service;
+import ru.otus.java.pro.result.project.hotels.dtos.HotelDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.Hotel;
 import ru.otus.java.pro.result.project.hotels.entities.HotelRoom;
 
@@ -11,6 +12,8 @@ import java.util.Optional;
 public interface HotelsService {
 
     List<Hotel> findHotels(String city);
+
+    List<Hotel> findFilterHotels(HotelDtoRq hotelDtoRq);
 
     Optional<Hotel> findHotel(int hotelId, String city);
 

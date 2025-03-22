@@ -8,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.java.pro.result.project.hotels.dtos.HotelDto;
+import ru.otus.java.pro.result.project.hotels.dtos.HotelDtoRq;
 import ru.otus.java.pro.result.project.hotels.dtos.UserOrderDto;
 import ru.otus.java.pro.result.project.hotels.dtos.UserOrderCreateDtoRq;
+import ru.otus.java.pro.result.project.hotels.entities.Hotel;
 import ru.otus.java.pro.result.project.hotels.exceptions.ResourceNotFoundException;
 import ru.otus.java.pro.result.project.hotels.services.HotelsService;
 import ru.otus.java.pro.result.project.hotels.services.UserOrderService;
@@ -28,6 +30,13 @@ public class HotelController {
     @ResponseStatus(HttpStatus.OK)
     public List<HotelDto> getAllHotels(@NotBlank @RequestParam("city") String city) {
         return hotelsService.findHotels(city).stream().map(HotelDto::mapping).toList();
+    }
+
+    @GetMapping(value = "/filter")
+    @ResponseStatus(HttpStatus.OK)
+    public List<HotelDto> getFilterHotels(@ModelAttribute HotelDtoRq hotelDtoRq) {
+        List<Hotel> hotels = hotelsService.findFilterHotels(hotelDtoRq);
+        return hotels.stream().map(HotelDto::mapping).toList();
     }
 
     @GetMapping("/{id}")
