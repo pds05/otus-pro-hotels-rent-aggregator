@@ -1,7 +1,7 @@
 insert into hotels (hotel_type_id, title, city_id, location, phone_number, email, building_year, rooms_value,
                     user_rating, location_desc, hotel_desc, rooms_desc, guest_info, time_check_in, time_check_out,
                     is_active, star_grade)
-values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title = 'Отель'),
+values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title = 'hotel'),
         'Отель Метрополь',
         (select ct_cities.id from ct_cities where ct_cities.title = 'Москва'),
         'Театральный пр-д, д.2',
@@ -57,13 +57,13 @@ insert into hotel_rooms(hotel_id, title, description, size, inside_rooms_number,
 values ((select hotels.id from hotels where title = 'Отель Метрополь'),
         'Двухместный номер Гранд Супериор Сингл', '2 отдельные кровати', 30, 1, 35, 2),
        ((select hotels.id from hotels where title = 'Отель Метрополь'),
-        'Двухместный номер Гранд Супериор', 'двуспальная кровать', 30, 1, 40, 2),
+        'Двухместный номер Гранд Супериор', 'Двуспальная кровать', 30, 1, 40, 2),
        ((select hotels.id from hotels where title = 'Отель Метрополь'),
-        'Авторский Представительский', 'двуспальная кровать', 35, 1, 25, 2),
+        'Авторский Представительский', 'Двуспальная кровать', 35, 1, 25, 2),
        ((select hotels.id from hotels where title = 'Отель Метрополь'),
         'Люкс Делюкс', 'Двухкомнатный номер с двухспальной кроватью и 2 отдельными кроватями', 50, 2, 20, 4),
        ((select hotels.id from hotels where title = 'Отель Метрополь'),
-        'Люкс Метрополь', 'двуспальная кровать и две отдельные кровати', 65, 2, 6, 4);
+        'Люкс Метрополь', 'Двуспальная кровать и две отдельные кровати', 65, 2, 6, 4);
 
 insert into hotel_room_beds (hotel_room_id, bed_type_id, amount)
 values ((select hr.id
@@ -75,7 +75,7 @@ values ((select hr.id
        ((select hr.id
          from hotel_rooms hr
                   join hotels h ON hr.hotel_id = h.id
-         where hr.title = 'Двухместный номер Гранд Супериор Сингл'
+         where hr.title = 'Двухместный номер Гранд Супериор'
            and h.title = 'Отель Метрополь'),
         (select ct_hotel_bed_types.id from ct_hotel_bed_types where title = 'queen'), 1),
        ((select hr.id
@@ -328,7 +328,15 @@ values ('Супериор',
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Двухместный номер Гранд Супериор Сингл'
            and h.title = 'Отель Метрополь'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'all inclusive'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'breakfast'),
+        30000, 'card', true),
+       ('Супериор Все включено',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Двухместный номер Гранд Супериор Сингл'
+           and h.title = 'Отель Метрополь'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'all_inclusive'),
         40000, 'card', true),
        ('Супериор',
         (select hr.id
@@ -336,34 +344,47 @@ values ('Супериор',
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Двухместный номер Гранд Супериор'
            and h.title = 'Отель Метрополь'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'all inclusive'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'breakfast'),
+        30000, 'card', true),
+       ('Супериор Все включено',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Двухместный номер Гранд Супериор'
+           and h.title = 'Отель Метрополь'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'all_inclusive'),
         40000, 'card', true),
-
        ('Авторский',
         (select hr.id
          from hotel_rooms hr
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Авторский Представительский'
            and h.title = 'Отель Метрополь'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'all inclusive'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'breakfast'),
         85000, 'card', true),
-       ('Авторский',
+       ('Авторский Все включено',
         (select hr.id
          from hotel_rooms hr
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Авторский Представительский'
            and h.title = 'Отель Метрополь'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'all inclusive'),
-        125000, 'card', true),  
-    
-    
+        (select feed.id from ct_hotel_feed_types feed where title = 'all_inclusive'),
+        125000, 'card', true),
        ('Люкс',
         (select hr.id
          from hotel_rooms hr
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Люкс Делюкс'
            and h.title = 'Отель Метрополь'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'all inclusive'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'breakfast'),
+        75000, 'card', true),
+       ('Люкс Все включено',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Люкс Делюкс'
+           and h.title = 'Отель Метрополь'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'all_inclusive'),
         85000, 'card', true),
        ('Люкс',
         (select hr.id
@@ -371,5 +392,13 @@ values ('Супериор',
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Люкс Метрополь'
            and h.title = 'Отель Метрополь'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'all inclusive'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'breakfast'),
+        125000, 'card', true),
+       ('Люкс Все включено',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Люкс Метрополь'
+           and h.title = 'Отель Метрополь'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'all_inclusive'),
         125000, 'card', true);

@@ -34,7 +34,7 @@ public class HotelController {
 
     @GetMapping(value = "/filter")
     @ResponseStatus(HttpStatus.OK)
-    public List<HotelDto> getFilterHotels(@ModelAttribute HotelDtoRq hotelDtoRq) {
+    public List<HotelDto> getFilterHotels(@Valid @ModelAttribute HotelDtoRq hotelDtoRq) {
         List<Hotel> hotels = hotelsService.findFilterHotels(hotelDtoRq);
         return hotels.stream().map(HotelDto::mapping).toList();
     }

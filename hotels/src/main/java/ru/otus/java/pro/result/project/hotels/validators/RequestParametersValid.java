@@ -5,19 +5,16 @@ import jakarta.validation.Payload;
 
 import java.lang.annotation.*;
 
-@Constraint(validatedBy = DateRangeValidator.class)
+@Constraint(validatedBy = RequestParametersValidator.class)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DateRangeValid {
-    String message() default "Check-in date must be before departure date";
+public @interface RequestParametersValid {
+    String message() default "Parameter not valid";
 
-    Class<?>[] groups() default {};
+    Class<?>[] groups() default { };
 
     Class<? extends Payload>[] payload() default {};
 
-    String before();
-
-    String after();
-
+    Class<?> source();
 }

@@ -9,7 +9,6 @@ import ru.otus.java.pro.result.project.hotels.entities.*;
 import ru.otus.java.pro.result.project.hotels.exceptions.ResourceNotFoundException;
 import ru.otus.java.pro.result.project.hotels.lib.UserOrderStatus;
 import ru.otus.java.pro.result.project.hotels.repositories.UserOrdersRepository;
-import ru.otus.java.pro.result.project.hotels.validators.UserOrderValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,6 @@ public class UserOrderServiceImpl implements UserOrderService {
     private final UserOrdersRepository userOrderRepository;
     private final HotelsService hotelsService;
     private final UserProfileService userProfileService;
-    private final UserOrderValidator requestValidator;
 
     @Override
     public Optional<UserOrder> findUserOrder(int orderId, String userId) {
@@ -37,7 +35,6 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Override
     public UserOrder createUserOrder(UserOrderCreateDtoRq orderDtoRq) {
         log.debug("Request to create user order, {}", orderDtoRq);
-        requestValidator.validate(orderDtoRq);
 
         UserProfile user = userProfileService.findUserProfile(orderDtoRq.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
         Hotel hotel = hotelsService.findHotel(orderDtoRq.getHotelId()).orElseThrow(() -> new ResourceNotFoundException("Hotel not exist"));

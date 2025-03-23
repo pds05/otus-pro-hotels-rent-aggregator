@@ -1,43 +1,45 @@
 package ru.otus.java.pro.result.project.hotels.dtos;
 
-import com.fasterxml.jackson.annotation.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.yaml.snakeyaml.util.EnumUtils;
+import ru.otus.java.pro.result.project.hotels.entities.*;
+import ru.otus.java.pro.result.project.hotels.validators.PriceRangeValid;
+import ru.otus.java.pro.result.project.hotels.validators.RequestParametersValid;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@PriceRangeValid(min = "priceFrom", max = "priceTo", message = "Wrong price range!")
 public class HotelDtoRq {
+    @NotEmpty
     private String city;
+
     private String hotel;
+    @Max(5)
     private Integer stars;
+    @PositiveOrZero
     private Integer priceFrom;
+    @PositiveOrZero
     private Integer priceTo;
-    private List<HotelTypeDtoRq> hotelTypes;
-    private  HotelTypeDtoRq hotelType;
+    @RequestParametersValid(source = CtHotelType.class)
+    List<String> hotelTypes;
+    @RequestParametersValid(source = HotelAmenity.class)
+    List<String> hotelAmenities;
+    @RequestParametersValid(source = HotelRoomAmenity.class)
+    List<String> hotelRoomAmenities;
+    @RequestParametersValid(source = CtHotelBedType.class)
+    List<String> beds;
+    @RequestParametersValid(source = CtHotelFeedType.class)
+    List<String> foods;
 
+    private Integer guests;
 
-    public enum HotelTypeDtoRq {
-        HOTEL("Отель"), HOSTEL("Хостел"), APARTMENTS("Апартаменты, квартира"), GUEST_HOUSE("Гостевой дом"), COTTAGE("Коттедж, вилла, бунгало"), SANATORIUM("Санаторий"), CAMPING("Кемпинг");
+    private Integer children;
 
-        private final String title;
-
-        HotelTypeDtoRq(String title) {
-            this.title = title;
-        }
-
-        public String getDescription() {
-            return title;
-        }
-        //FIXME Not working string to enum insensitive mapping with @JsonCreator
-        //FIXME Workaround solution to use WebMvcConfigurationSupport with custom Converter
-        @JsonCreator
-        public static HotelTypeDtoRq fromString(String value) {
-            return EnumUtils.findEnumInsensitiveCase(HotelTypeDtoRq.class, value);
-        }
-    }
 }

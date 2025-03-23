@@ -27,19 +27,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(value = CustomValidationException.class)
-    public ResponseEntity<ValidationErrorDto> catchValidationException(CustomValidationException exception) {
-        log.warn("Request not valid: {}", exception.print());
-        return new ResponseEntity<>(
-                new ValidationErrorDto(
-                        exception.getCode(),
-                        exception.getMessage(),
-                        exception.getErrors().stream().map(ve -> new ValidationFieldErrorDto(ve.getField(), ve.getMessage())).collect(Collectors.toUnmodifiableList())
-                ),
-                HttpStatus.UNPROCESSABLE_ENTITY
-        );
-    }
-
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<ValidationErrorDto> catchValidationException(ConstraintViolationException exception) {
         log.warn("Request not valid: {}", exception.getMessage());

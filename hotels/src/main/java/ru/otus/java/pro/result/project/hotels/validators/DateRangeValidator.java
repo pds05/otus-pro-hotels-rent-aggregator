@@ -12,6 +12,7 @@ public class DateRangeValidator implements ConstraintValidator<DateRangeValid, O
 
     @Override
     public void initialize(DateRangeValid constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
         beforeFieldName = constraintAnnotation.before();
         afterFieldName = constraintAnnotation.after();
     }

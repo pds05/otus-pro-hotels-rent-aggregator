@@ -1,7 +1,7 @@
 insert into hotels (hotel_type_id, title, city_id, location, phone_number, email, building_year, rooms_value,
                     user_rating, location_desc, hotel_desc, rooms_desc, guest_info, time_check_in, time_check_out,
                     is_active, star_grade)
-values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title = 'Отель'),
+values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title = 'hotel'),
         'Отель Альянс Бородино',
         (select ct_cities.id from ct_cities where ct_cities.title = 'Москва'),
         'Русаковская ул.13, стр. 5',
@@ -326,7 +326,7 @@ values ('Экономный, невозвратный, без питания',
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Двухместный номер Эконом'
            and h.title = 'Отель Альянс Бородино'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'half board'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'half_board'),
         6000, 'card', true),
        ('Стандартный, невозвратный, без питания',
         (select hr.id
@@ -350,9 +350,32 @@ values ('Экономный, невозвратный, без питания',
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Двухместный номер Стандарт'
            and h.title = 'Отель Альянс Бородино'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'half board'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'half_board'),
         7500, 'card', true),
-
+       ('Улучшенный, невозвратный, без питания',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Двухместный номер Улучшенный'
+           and h.title = 'Отель Альянс Бородино'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'none'),
+        6500, 'card', false),
+       ('Улучшенный без питания',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Двухместный номер Улучшенный'
+           and h.title = 'Отель Альянс Бородино'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'none'),
+        6700, 'card', true),
+       ('Улучшенный с питанием',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Двухместный номер Улучшенный'
+           and h.title = 'Отель Альянс Бородино'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'half_board'),
+        8500, 'card', true),
        ('Семейный, невозвратный, без питания',
         (select hr.id
          from hotel_rooms hr
@@ -360,7 +383,7 @@ values ('Экономный, невозвратный, без питания',
          where hr.title = 'Двухместный номер Семейный'
            and h.title = 'Отель Альянс Бородино'),
         (select feed.id from ct_hotel_feed_types feed where title = 'none'),
-        6000, 'card', false),
+        8000, 'card', false),
        ('Семейный без питания',
         (select hr.id
          from hotel_rooms hr
@@ -368,16 +391,15 @@ values ('Экономный, невозвратный, без питания',
          where hr.title = 'Двухместный номер Семейный'
            and h.title = 'Отель Альянс Бородино'),
         (select feed.id from ct_hotel_feed_types feed where title = 'none'),
-        6200, 'card', true),
+        8400, 'card', true),
        ('Семейный с питанием',
         (select hr.id
          from hotel_rooms hr
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Двухместный номер Семейный'
            and h.title = 'Отель Альянс Бородино'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'half board'),
-        7800, 'card', true),
-
+        (select feed.id from ct_hotel_feed_types feed where title = 'half_board'),
+        10500, 'card', true),
        ('Семейный, невозвратный, без питания',
         (select hr.id
          from hotel_rooms hr
@@ -400,5 +422,5 @@ values ('Экономный, невозвратный, без питания',
                   join hotels h ON hr.hotel_id = h.id
          where hr.title = 'Четырехместный номер Семейный'
            and h.title = 'Отель Альянс Бородино'),
-        (select feed.id from ct_hotel_feed_types feed where title = 'half board'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'half_board'),
         10500, 'card', true);

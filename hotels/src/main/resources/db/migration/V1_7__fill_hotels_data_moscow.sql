@@ -1,7 +1,7 @@
 insert into hotels (hotel_type_id, title, city_id, location, phone_number, email, rooms_value,
                     user_rating, location_desc, hotel_desc, rooms_desc, guest_info, time_check_in, time_check_out,
                     is_active)
-values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title = 'Апартаменты, квартира'),
+values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title = 'apartments'),
         'Квартира на Волгоградском проспекте',
         (select ct_cities.id from ct_cities where ct_cities.title = 'Москва'),
         'Волгоградский проспект, д. 48Б',
@@ -18,8 +18,7 @@ values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title
         true);
 
 insert into hotels_hotel_amenities (hotel_id, hotel_amenity_id, is_special, is_additional_cost, description)
-VALUES
-       ((select hotels.id from hotels where title = 'Квартира на Волгоградском проспекте'),
+VALUES ((select hotels.id from hotels where title = 'Квартира на Волгоградском проспекте'),
         (select hotel_amenities.id from hotel_amenities where hotel_amenities.title = 'Кондиционер'), true, false, ''),
        ((select hotels.id from hotels where title = 'Квартира на Волгоградском проспекте'),
         (select hotel_amenities.id from hotel_amenities where hotel_amenities.title = 'Лифт'), false, false, ''),
@@ -30,10 +29,13 @@ VALUES
        ((select hotels.id from hotels where title = 'Квартира на Волгоградском проспекте'),
         (select hotel_amenities.id from hotel_amenities where hotel_amenities.title = 'Фен'), false, false, ''),
        ((select hotels.id from hotels where title = 'Квартира на Волгоградском проспекте'),
-        (select hotel_amenities.id from hotel_amenities where hotel_amenities.title = 'Доступ в интернет'), true, false,''),
+        (select hotel_amenities.id from hotel_amenities where hotel_amenities.title = 'Доступ в интернет'), true, false,
+        ''),
        ((select hotels.id from hotels where title = 'Квартира на Волгоградском проспекте'),
-        (select hotel_amenities.id from hotel_amenities where hotel_amenities.title = 'Утюг'), false, true,
-        '1500 RUB за каждый автомобиль за ночь');
+        (select hotel_amenities.id from hotel_amenities where hotel_amenities.title = 'Утюг'), false, true, ''),
+       ((select hotels.id from hotels where title = 'Квартира на Волгоградском проспекте'),
+        (select hotel_amenities.id from hotel_amenities where hotel_amenities.title = 'Общественная парковка'), false,
+        true, 'Во дворе дома');
 
 insert into hotel_rooms(hotel_id, title, description, size, inside_rooms_number, max_guests)
 values ((select hotels.id from hotels where title = 'Квартира на Волгоградском проспекте'),

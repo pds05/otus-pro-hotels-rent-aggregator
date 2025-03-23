@@ -1,7 +1,7 @@
 insert into hotels (hotel_type_id, title, city_id, location, phone_number, email, building_year, rooms_value,
                     user_rating, location_desc, hotel_desc, rooms_desc, guest_info, time_check_in, time_check_out,
                     is_active, star_grade)
-values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title = 'Отель'),
+values ((select ct_hotel_types.id from ct_hotel_types where ct_hotel_types.title = 'hotel'),
         'Отель Москва Красносельская',
         (select ct_cities.id from ct_cities where ct_cities.title = 'Москва'),
         'Верхняя Красносельская улица, д.11Ас4',
@@ -352,7 +352,30 @@ values ('Экономный, невозвратный, без питания',
            and h.title = 'Отель Москва Красносельская'),
         (select feed.id from ct_hotel_feed_types feed where title = 'breakfast'),
         5500, 'card', true),
-
+       ('Улучшенный, невозвратный, без питания',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Двухместный номер Улучшенный'
+           and h.title = 'Отель Москва Красносельская'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'none'),
+        4000, 'card', false),
+       ('Улучшенный без питания',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Двухместный номер Улучшенный'
+           and h.title = 'Отель Москва Красносельская'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'none'),
+        4200, 'card', true),
+       ('Улучшенный с питанием',
+        (select hr.id
+         from hotel_rooms hr
+                  join hotels h ON hr.hotel_id = h.id
+         where hr.title = 'Двухместный номер Улучшенный'
+           and h.title = 'Отель Москва Красносельская'),
+        (select feed.id from ct_hotel_feed_types feed where title = 'breakfast'),
+        5700, 'card', true),
        ('Семейный, невозвратный, без питания',
         (select hr.id
          from hotel_rooms hr
@@ -377,7 +400,6 @@ values ('Экономный, невозвратный, без питания',
            and h.title = 'Отель Москва Красносельская'),
         (select feed.id from ct_hotel_feed_types feed where title = 'breakfast'),
         5800, 'card', true),
-
        ('Семейный, невозвратный, без питания',
         (select hr.id
          from hotel_rooms hr

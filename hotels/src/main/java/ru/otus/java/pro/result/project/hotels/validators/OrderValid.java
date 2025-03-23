@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface OrderValid {
-    String message() default "order is invalid";
+    String message() default "Order is invalid";
 
     Class<?>[] groups() default { };
 

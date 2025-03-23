@@ -7,7 +7,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 @Configuration
 public class ValidationConfiguration {
 
-    @Bean
+//    @Bean
     public static MethodValidationPostProcessor validationPostProcessor() {
         MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
         processor.setAdaptConstraintViolations(true);

@@ -11,28 +11,28 @@ values (7495, 'Москва'),
        (7383, 'Новосибирск');
 
 insert into ct_hotel_bed_types (title, description)
-values ('single', 'односпальная кровать'),
-       ('separate', 'раздельные кровати'),
-       ('queen', 'двуспальная кровать'),
-       ('king', 'vip-двуспальная кровать'),
-       ('sofa', 'дополнительное спальное место'),
-       ('baby', 'детская кроватка');
+values ('single', 'Односпальная кровать'),
+       ('separate', 'Раздельные кровати'),
+       ('queen', 'Двуспальная кровать'),
+       ('king', 'Vip-двуспальная кровать'),
+       ('sofa', 'Дополнительное спальное место'),
+       ('baby', 'Детская кроватка');
 
 insert into ct_hotel_feed_types (title, description)
-values ('all inclusive', 'все включено'),
-       ('breakfast', 'завтрак включен'),
-       ('half board', 'завтрак, обед или ужин включен'),
-       ('full board', 'завтрак, обед и ужин включены'),
-       ('none', 'без питания');
+values ('all_inclusive', 'Все включено'),
+       ('breakfast', 'Завтрак включен'),
+       ('half_board', 'Завтрак, обед или ужин включен'),
+       ('full_board', 'Завтрак, обед и ужин включены'),
+       ('none', 'Без питания');
 
-insert into ct_hotel_types (title)
-values ('Отель'),
-       ('Хостел'),
-       ('Апартаменты, квартира'),
-       ('Гостевой дом'),
-       ('Коттедж, вилла, бунгало'),
-       ('Санаторий'),
-       ('Кемпинг');
+insert into ct_hotel_types (title, description)
+values ('hotel', 'Отель'),
+       ('hostel','Хостел'),
+       ('apartments','Апартаменты, квартира'),
+       ('guest_house', 'Гостевой дом'),
+       ('cottage','Коттедж, вилла, бунгало'),
+       ('sanatorium','Санаторий'),
+       ('camping','Кемпинг');
 
 insert into hotel_amenity_groups(title, order_num)
 values ('Общее', 1),
@@ -109,7 +109,7 @@ VALUES ((select id from hotel_amenity_groups where hotel_amenity_groups.title = 
        ((select id from hotel_amenity_groups where hotel_amenity_groups.title = 'Красота и здоровье'), 'Сауна'),
        ((select id from hotel_amenity_groups where hotel_amenity_groups.title = 'Красота и здоровье'), 'Спа'),
        ((select id from hotel_amenity_groups where hotel_amenity_groups.title = 'Дети'), 'Игровая комната'),
-       ((select id from hotel_amenity_groups where hotel_amenity_groups.title = 'Дети'), 'Услуги няни и уход за детьм'),
+       ((select id from hotel_amenity_groups where hotel_amenity_groups.title = 'Дети'), 'Услуги няни и уход за детьми'),
        ((select id from hotel_amenity_groups where hotel_amenity_groups.title = 'Животные'),'Домашние животные не допускается'),
        ((select id from hotel_amenity_groups where hotel_amenity_groups.title = 'Животные'),'Можно с домашними животными');
 
