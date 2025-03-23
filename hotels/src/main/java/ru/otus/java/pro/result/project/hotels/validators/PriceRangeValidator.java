@@ -24,10 +24,10 @@ public class PriceRangeValidator implements ConstraintValidator<PriceRangeValid,
             final Field maxField = value.getClass().getDeclaredField(maxFieldName);
             maxField.setAccessible(true);
 
-            int min = Integer.parseInt(minField.get(value).toString());
-            int max = Integer.parseInt(maxField.get(value).toString());
-            if (min > 0 && max > 0) {
-                return max >= min;
+            Object min = minField.get(value);
+            Object max = maxField.get(value);
+            if (min != null && max != null) {
+                return Integer.parseInt(max.toString()) >= Integer.parseInt(min.toString());
             }
             return true;
         } catch (NoSuchFieldException | IllegalAccessException e) {

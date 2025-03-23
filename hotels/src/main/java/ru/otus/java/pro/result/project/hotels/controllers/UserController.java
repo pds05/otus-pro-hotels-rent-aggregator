@@ -1,6 +1,7 @@
 package ru.otus.java.pro.result.project.hotels.controllers;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +23,9 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/order")
-    public List<UserOrderDto> getUserOrders(@Valid @RequestParam("user-id") String userId) {
+    public List<UserOrderDto> getUserOrders(
+            @Pattern(regexp = "\\d{8}", message = "user-id invalid, must consist of 8 digits")
+            @RequestParam("user-id") String userId) {
         return userOrderService.findUserOrders(userId).stream().map(UserOrderDto::mapping).toList();
     }
 

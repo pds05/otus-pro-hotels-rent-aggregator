@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
         log.warn("Request not valid: {}", exception.getMessage());
         return new ResponseEntity<>(
                 new ValidationErrorDto("VALIDATION_ERROR", "Request not valid",
-                        exception.getConstraintViolations().stream().map(cv -> new ValidationFieldErrorDto(cv.getPropertyPath().toString(), cv.getMessage())).collect(Collectors.toUnmodifiableList())
+                        exception.getConstraintViolations().stream().map(cv -> new ValidationFieldErrorDto(cv.getPropertyPath().toString().split("\\.")[1], cv.getMessage())).collect(Collectors.toUnmodifiableList())
                 ),
                 HttpStatus.UNPROCESSABLE_ENTITY
         );

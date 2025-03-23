@@ -53,11 +53,11 @@ public class HotelDao {
             Expression<String> expression = hotelRoot.join(Hotel_.HOTEL_ROOMS).join(HotelRoom_.HOTEL_ROOM_BEDS).join(HotelRoomBed_.BED_TYPE).get(CtHotelBedType_.TITLE);
             predicates.add(expression.in(hotelDtoRq.getBeds()));
         }
-        if (hotelDtoRq.getPriceFrom() > 0) {
+        if (hotelDtoRq.getPriceFrom() != null) {
             Expression<BigDecimal> expression = hotelRoot.join(Hotel_.HOTEL_ROOMS).join(HotelRoom_.HOTEL_ROOM_RATES).get(HotelRoomRate_.PRICE);
             predicates.add(cb.ge(expression, hotelDtoRq.getPriceFrom()));
         }
-        if (hotelDtoRq.getPriceTo() > 0) {
+        if (hotelDtoRq.getPriceTo() != null) {
             Expression<BigDecimal> expression = hotelRoot.join(Hotel_.HOTEL_ROOMS).join(HotelRoom_.HOTEL_ROOM_RATES).get(HotelRoomRate_.PRICE);
             predicates.add(cb.le(expression, hotelDtoRq.getPriceTo()));
         }
