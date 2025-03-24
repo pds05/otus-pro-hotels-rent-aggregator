@@ -2,6 +2,7 @@ package ru.otus.java.pro.result.project.hotels.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,27 +16,41 @@ import java.util.function.Function;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+@Schema(description = "Детальная информация о бронировании")
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserOrderDto {
+    @Schema(description = "Статус бронирования")
     private String status;
+    @Schema(description = "Номер бронирования", example = "00000001-1")
     private String order;
-    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
+    @Schema(description = "Время бронирования", format = "date-time", type = "string", example = "2025-10-20 12:58:09")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateOrdered;
+    @Schema(description = "Стоимость бронирования", type = "number", example = "8500.00")
     private BigDecimal price;
+    @Schema(description = "ФИО пользователя")
     private String clientName;
+    @Schema(description = "Название отеля")
     private String hotel;
+    @Schema(description = "Адрес отеля")
     private String address;
+    @Schema(description = "Название номера")
     private String room;
+    @Schema(description = "Название тарифа")
     private String rate;
-    @JsonFormat(pattern = "MM-dd-yyyy")
+    @Schema(description = "Дата заезда", format = "date", type = "string", example = "2025-10-25")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateIn;
-    @JsonFormat(pattern = "MM-dd-yyyy")
+    @Schema(description = "Дата выезда", format = "date", type = "string", example = "2025-10-26")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOut;
+    @Schema(description = "Количество ночей", type = "integer", example = "1")
     private Long nights;
+    @Schema(description = "Дополнительная информация")
     private String description;
 
     private static final Function<UserOrder, UserOrderDto> USER_ORDER_ENTITY_TO_DTO = order -> new UserOrderDto(order.getStatus().name().toLowerCase(), order.getUserOrderId().print(), order.getCreatedAt(), order.getOrderPrice(), order.getUserProfile().printFullName(), order.getHotelRoom().getHotel().getTitle(), order.getHotelRoom().getHotel().printAddress(), order.getHotelRoom().getTitle(), order.getHotelRoomRate().getTitle(), order.getDateIn(), order.getDateOut(), DAYS.between(order.getDateIn(), order.getDateOut()), order.getDescription());

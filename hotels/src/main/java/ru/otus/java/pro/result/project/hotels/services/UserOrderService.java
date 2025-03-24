@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserOrderService {
 
-    Optional<UserOrder> findUserOrder(int orderId, String userId);
+    UserOrder findUserOrder(String order);
 
     List<UserOrder> findUserOrders(String userId);
 

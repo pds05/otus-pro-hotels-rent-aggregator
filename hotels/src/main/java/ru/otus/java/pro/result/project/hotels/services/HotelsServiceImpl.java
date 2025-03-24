@@ -11,7 +11,6 @@ import ru.otus.java.pro.result.project.hotels.repositories.HotelRoomsRepository;
 import ru.otus.java.pro.result.project.hotels.repositories.HotelsRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

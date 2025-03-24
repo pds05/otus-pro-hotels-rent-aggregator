@@ -17,7 +17,8 @@ import java.util.List;
 @Repository
 public class HotelDao {
     private final EntityManager em;
-
+    //TODO улучшить динамический запрос
+    //TODO реализовать поиск с учетом свободных номеров в запрошенные даты
     public List<Hotel> getFilterHotels(HotelDtoRq hotelDtoRq) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Hotel> cq = cb.createQuery(Hotel.class);

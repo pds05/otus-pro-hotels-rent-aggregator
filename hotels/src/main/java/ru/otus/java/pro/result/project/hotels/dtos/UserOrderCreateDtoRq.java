@@ -1,5 +1,6 @@
 package ru.otus.java.pro.result.project.hotels.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -34,16 +35,18 @@ public class UserOrderCreateDtoRq {
     @NotNull (message = RATE_ID_FIELD + " is required")
     @Positive (message = RATE_ID_FIELD + " must be positive")
     private Integer rateId;
-    @Schema(description = "Идентификатор клиента", type = "integer", requiredMode = Schema.RequiredMode.REQUIRED, example = "1234")
+    @Schema(description = "Идентификатор клиента", type = "integer", requiredMode = Schema.RequiredMode.REQUIRED, example = "00000001")
     @Pattern(regexp = "\\d{8}", message = USER_ID_FIELD + " invalid, must consist of 8 digits")
     private String userId;
-    @Schema(description = "Дата заезда", requiredMode = Schema.RequiredMode.REQUIRED, example = "2025-10-25")
+    @Schema(description = "Дата заезда", requiredMode = Schema.RequiredMode.REQUIRED, format = "date", type = "string", example = "2025-10-25")
     @NotNull
     @FutureOrPresent(message = DATE_IN_FIELD + " check-in date must be greater or equal to the current date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateIn;
-    @Schema(description = "Дата выезда", requiredMode = Schema.RequiredMode.REQUIRED, example = "2025-10-26")
+    @Schema(description = "Дата выезда", requiredMode = Schema.RequiredMode.REQUIRED, format = "date", type = "string", example = "2025-10-26")
     @NotNull
     @Future(message = DATE_OUT_FIELD + " departure date must be greater to the current date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOut;
     @Schema(description = "Количество проживающих гостей", type = "integer", requiredMode = Schema.RequiredMode.REQUIRED, example = "2")
     @Positive

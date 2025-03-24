@@ -50,6 +50,9 @@ public class UserOrder {
     @Column(name = "order_price", precision = 10, scale = 2)
     private BigDecimal orderPrice;
 
+    @Column(name = "is_refund")
+    private Boolean isRefund;
+
     @Column(name = "description")
     private String description;
 

@@ -10,4 +10,5 @@ public class HotelsApplication {
         SpringApplication.run(HotelsApplication.class, args);
     }
 
+    //TODO добавить поддержку пересчета и поиска свободного жилья по датам
 }

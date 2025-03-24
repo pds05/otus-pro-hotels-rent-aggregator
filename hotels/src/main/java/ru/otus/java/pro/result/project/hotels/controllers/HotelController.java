@@ -21,12 +21,14 @@ import ru.otus.java.pro.result.project.hotels.dtos.HotelDtoRq;
 import ru.otus.java.pro.result.project.hotels.dtos.UserOrderDto;
 import ru.otus.java.pro.result.project.hotels.dtos.UserOrderCreateDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.Hotel;
+import ru.otus.java.pro.result.project.hotels.exceptions.ErrorDto;
+import ru.otus.java.pro.result.project.hotels.exceptions.ValidationErrorDto;
 import ru.otus.java.pro.result.project.hotels.services.HotelsService;
 import ru.otus.java.pro.result.project.hotels.services.UserOrderService;
 
 import java.util.*;
 
-@Tag(name = "Сервис аренды жилья Hotels", description = "Методы поиска и аренды жилья ")
+@Tag(name = "Витрина предложений по аренде жилья", description = "Методы поиска и аренды жилья")
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -47,10 +49,14 @@ public class HotelController {
         return hotelsService.findHotels(city).stream().map(HotelDto::mapping).toList();
     }
 
-    @Operation(summary = "Метод поиска жилья с применением фильтров",
-            responses = @ApiResponse(description = "Успешный ответ", responseCode = "200",
+    @Operation(summary = "Метод поиска жилья с применением фильтров", responses = {
+            @ApiResponse(description = "Успешный ответ", responseCode = "200",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = HotelDto.class)),
-                            mediaType = MediaType.APPLICATION_JSON_VALUE)))
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(description = "Ошибка валидации параметров запроса", responseCode = "422",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class)),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))
+    })
     @GetMapping(value = "/filter")
     @ResponseStatus(HttpStatus.OK)
     public List<HotelDto> getFilterHotels(
@@ -72,11 +78,16 @@ public class HotelController {
         return HotelDto.mapping(hotelsService.findHotel(hotelId));
     }
 
-    @Operation(summary = "Метод бронирования жилья",
-            responses = @ApiResponse(description = "Успешный ответ", responseCode = "200",
+    @Operation(summary = "Метод бронирования жилья", responses = {
+            @ApiResponse(description = "Успешный ответ", responseCode = "201",
                     content = @Content(schema = @Schema(implementation = UserOrderDto.class),
-                            mediaType = MediaType.APPLICATION_JSON_VALUE)))
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(description = "Ресурс не найден", responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = ErrorDto.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE))
+    })
     @PostMapping("/reserve")
+    @ResponseStatus(HttpStatus.CREATED)
     public UserOrderDto createOrder(
             @Parameter(description = "Параметры бронирования", required = true)
             @Valid @RequestBody UserOrderCreateDtoRq orderDtoRq) {
