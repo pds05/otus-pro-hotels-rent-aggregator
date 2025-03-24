@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.java.pro.result.project.hotels.dtos.UserOrderCreateDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.*;
+import ru.otus.java.pro.result.project.hotels.exceptions.BusinessLogicException;
 import ru.otus.java.pro.result.project.hotels.exceptions.ResourceNotFoundException;
 import ru.otus.java.pro.result.project.hotels.lib.UserOrderStatus;
 import ru.otus.java.pro.result.project.hotels.repositories.UserOrdersRepository;
@@ -36,11 +37,13 @@ public class UserOrderServiceImpl implements UserOrderService {
     public UserOrder createUserOrder(UserOrderCreateDtoRq orderDtoRq) {
         log.debug("Request to create user order, {}", orderDtoRq);
 
-        UserProfile user = userProfileService.findUserProfile(orderDtoRq.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
-        Hotel hotel = hotelsService.findHotel(orderDtoRq.getHotelId()).orElseThrow(() -> new ResourceNotFoundException("Hotel not exist"));
-        HotelRoom hotelRoom = hotelsService.findHotelRoom(orderDtoRq.getRoomId(), hotel.getId()).orElseThrow(() -> new ResourceNotFoundException("Room not exist"));
+        UserProfile user = userProfileService.findUserProfile(orderDtoRq.getUserId());
+        Hotel hotel = hotelsService.findHotel(orderDtoRq.getHotelId());
+        HotelRoom hotelRoom = hotelsService.findHotelRoom(orderDtoRq.getRoomId(), hotel.getId());
+        if (hotelRoom.getMaxGuests() < (orderDtoRq.getGuests() + Optional.ofNullable(orderDtoRq.getChildren()).orElse(0))) {
+            throw new BusinessLogicException("GUESTS_EXCESS", "too many guests, room not suitable");
+        }
         HotelRoomRate rate = hotelRoom.getHotelRoomRates().stream().filter(r -> r.getId().equals(orderDtoRq.getRateId())).findFirst().orElseThrow(() -> new ResourceNotFoundException("Room rate not exist"));
-
         UserOrder userOrder = new UserOrder();
         userOrder.setUserOrderId(new UserOrderKey(userOrderRepository.getNextValueUserOrderId(user.getId()), user.getId()));
         userOrder.setUserProfile(user);

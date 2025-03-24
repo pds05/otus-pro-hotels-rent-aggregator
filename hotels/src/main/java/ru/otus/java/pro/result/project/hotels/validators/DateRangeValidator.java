@@ -26,9 +26,14 @@ public class DateRangeValidator implements ConstraintValidator<DateRangeValid, O
             final Field afterDateField = value.getClass().getDeclaredField(afterFieldName);
             afterDateField.setAccessible(true);
 
-            final LocalDate beforeDate = (LocalDate) beforeDateField.get(value);
-            final LocalDate afterDate = (LocalDate) afterDateField.get(value);
-            return beforeDate.isEqual(afterDate) || beforeDate.isBefore(afterDate);
+            Object beforeObject = beforeDateField.get(value);
+            Object afterObject = afterDateField.get(value);
+            if (beforeObject == null || afterObject == null) {
+                return false;
+            }
+            final LocalDate beforeDate = (LocalDate) beforeObject;
+            final LocalDate afterDate = (LocalDate) afterObject;
+            return !beforeDate.isEqual(afterDate) && beforeDate.isBefore(afterDate);
         } catch (NoSuchFieldException | IllegalAccessException ignored) {
             return false;
         }

@@ -14,6 +14,7 @@ public class OrderValidator implements ConstraintValidator<OrderValid, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
+        if (s == null) return false;
         Matcher matcher = Pattern.compile("\\d{8}-\\d+").matcher(s);
         return matcher.matches();
     }

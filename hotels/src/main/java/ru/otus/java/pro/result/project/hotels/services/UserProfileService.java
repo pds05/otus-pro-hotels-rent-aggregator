@@ -9,5 +9,5 @@ public interface UserProfileService {
 
     UserProfile createUserProfile(UserDtoRq userDtoRq);
 
-    Optional<UserProfile> findUserProfile(String id);
+    UserProfile findUserProfile(String id);
 }

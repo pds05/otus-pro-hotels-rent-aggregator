@@ -16,11 +16,15 @@ spring:
         format_sql: true
   flyway:
 #    baseline-on-migrate: true
+springdoc:
+  swagger-ui:
+    path: /swagger
 logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
 #    org.hibernate.orm.jdbc.extract: TRACE
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.zalando.logbook.Logbook: TRACE
     ru.otus: DEBUG
 

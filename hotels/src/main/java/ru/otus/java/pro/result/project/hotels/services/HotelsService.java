@@ -15,15 +15,13 @@ public interface HotelsService {
 
     List<Hotel> findFilterHotels(HotelDtoRq hotelDtoRq);
 
-    Optional<Hotel> findHotel(int hotelId, String city);
-
-    Optional<Hotel> findHotel(int hotelId);
+    Hotel findHotel(int hotelId);
 
     List<HotelRoom> findHotelRooms(int hotelId);
 
-    Optional<HotelRoom> findHotelRoom(int hotelRoomId, int hotelId);
+    HotelRoom findHotelRoom(int hotelRoomId, int hotelId);
 
     List<HotelRoom> findHotelRoomsWithOrders(int hotelId);
 
-    Optional<HotelRoom> findHotelRoomWithOrders(int hotelRoomId, int hotelId);
+    HotelRoom findHotelRoomWithOrders(int hotelRoomId, int hotelId);
 }

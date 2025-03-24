@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.java.pro.result.project.hotels.dtos.UserDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.UserProfile;
+import ru.otus.java.pro.result.project.hotels.exceptions.ResourceNotFoundException;
 import ru.otus.java.pro.result.project.hotels.repositories.UserProfilesRepository;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -30,7 +28,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public Optional<UserProfile> findUserProfile(String id) {
-        return repository.findById(id);
+    public UserProfile findUserProfile(String id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
     }
 }

@@ -2,11 +2,12 @@ package ru.otus.java.pro.result.project.hotels.validators;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+import jakarta.validation.constraints.NotNull;
 
 import java.lang.annotation.*;
 
 @Constraint(validatedBy = DateRangeValidator.class)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DateRangeValid {
