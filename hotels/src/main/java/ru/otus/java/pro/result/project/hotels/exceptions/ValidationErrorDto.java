@@ -13,7 +13,7 @@ public class ValidationErrorDto {
     private String code;
     private String message;
     private List<ValidationFieldErrorDto> errors;
-    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
 
     public ValidationErrorDto(String code, String message, List<ValidationFieldErrorDto> errors) {
