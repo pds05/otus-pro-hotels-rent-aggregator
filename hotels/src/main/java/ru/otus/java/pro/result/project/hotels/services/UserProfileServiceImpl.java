@@ -1,10 +1,12 @@
 package ru.otus.java.pro.result.project.hotels.services;
 
 import io.micrometer.common.util.StringUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.java.pro.result.project.hotels.dtos.UserDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.UserProfile;
+import ru.otus.java.pro.result.project.hotels.exceptions.BusinessLogicException;
 import ru.otus.java.pro.result.project.hotels.exceptions.ResourceNotFoundException;
 import ru.otus.java.pro.result.project.hotels.repositories.UserProfilesRepository;
 
@@ -12,8 +14,13 @@ import ru.otus.java.pro.result.project.hotels.repositories.UserProfilesRepositor
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfilesRepository repository;
+
+    @Transactional
     @Override
     public UserProfile createUserProfile(UserDtoRq userDtoRq) {
+        repository.findByEmailOrPhoneNumber(userDtoRq.getEmail(), userDtoRq.getPhoneNumber()).ifPresent(profile -> {
+            throw new BusinessLogicException("USER_ALREADY_EXIST", "user already exists with " + ((userDtoRq.getEmail() != null && userDtoRq.getEmail().equalsIgnoreCase(profile.getEmail())) ? "email " + userDtoRq.getEmail() : "phoneNumber " + userDtoRq.getPhoneNumber()));
+        });
         UserProfile userProfile = UserProfile.builder()
                 .firstName(userDtoRq.getFirstName())
                 .lastName(userDtoRq.getLastName())
