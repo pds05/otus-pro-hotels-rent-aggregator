@@ -44,7 +44,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Transactional
     @Override
     public UserOrder createUserOrder(UserOrderCreateDtoRq orderDtoRq) {
-        log.debug("Request to create user order, {}", orderDtoRq);
+        log.debug("Creating new order, {}", orderDtoRq);
 
         UserProfile user = userProfileService.findUserProfile(orderDtoRq.getUserId());
         Hotel hotel = hotelsService.findHotel(orderDtoRq.getHotelId());
@@ -65,14 +65,14 @@ public class UserOrderServiceImpl implements UserOrderService {
         userOrder.setStatus(UserOrderStatus.CREATED);
         userOrder.setIsRefund(rate.getIsRefund());
         userOrder = userOrderRepository.save(userOrder);
-        log.debug("Request completed, user order created {}", userOrder);
+        log.debug("Order is created {}", userOrder);
         return userOrder;
     }
 
     @Transactional
     @Override
     public UserOrder canceledUserOrder(String order) {
-        log.debug("Request to cancel an order {}", order);
+        log.debug("Order canceling, {}", order);
         try {
             String userProfileId = order.split("-")[0];
             int userOrderId = Integer.parseInt(order.split("-")[1]);
@@ -80,7 +80,7 @@ public class UserOrderServiceImpl implements UserOrderService {
             if (userOrder.getIsRefund()) {
                 userOrder.setStatus(UserOrderStatus.CANCELED);
                 userOrder = userOrderRepository.save(userOrder);
-                log.debug("Order canceled {}", order);
+                log.debug("Order is canceled, {}", order);
                 return userOrder;
             } else {
                 throw new BusinessLogicException("ORDER_NOT_REFUNDED", "order not refunded");
