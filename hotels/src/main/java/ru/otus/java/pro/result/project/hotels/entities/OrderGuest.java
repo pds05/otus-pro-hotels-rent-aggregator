@@ -1,6 +1,8 @@
 package ru.otus.java.pro.result.project.hotels.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -20,9 +22,11 @@ public class OrderGuest {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NotEmpty
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
+    @NotEmpty
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
@@ -36,9 +40,9 @@ public class OrderGuest {
     @Column(name = "child_age")
     private Short childAge;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-
     @JoinColumns(value = {
             @JoinColumn(name = "user_order_id", nullable = false),
             @JoinColumn(name = "user_profile_id", nullable = false)

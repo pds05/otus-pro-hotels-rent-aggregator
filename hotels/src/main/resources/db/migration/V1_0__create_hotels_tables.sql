@@ -75,15 +75,15 @@ create table if not exists hotel_amenity_groups
 create table if not exists hotel_amenities
 (
     id                     serial primary key,
-    hotel_amenity_group_id int,
+    hotel_amenity_group_id int         not null,
     title                  varchar(50) not null UNIQUE,
     CONSTRAINT fk_hotel_amenities_group FOREIGN KEY (hotel_amenity_group_id) references hotel_amenity_groups (id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 create table if not exists hotels_hotel_amenities
 (
-    hotel_id           int,
-    hotel_amenity_id   int,
+    hotel_id           int not null,
+    hotel_amenity_id   int not null,
     is_special         boolean default false,
     is_additional_cost boolean default false,
     description        varchar(255),
@@ -139,8 +139,8 @@ create table if not exists hotel_room_amenities
 
 create table if not exists hotel_rooms_hotel_room_amenities_rel
 (
-    hotel_room_id         int,
-    hotel_room_amenity_id int,
+    hotel_room_id         int not null,
+    hotel_room_amenity_id int not null,
     CONSTRAINT pk_hotel_room_id_hotel_room_amenity_id PRIMARY KEY (hotel_room_id, hotel_room_amenity_id),
     CONSTRAINT fk_hotel_rooms_rel FOREIGN KEY (hotel_room_id) REFERENCES hotel_rooms (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_hotel_amenity_groups_rel FOREIGN KEY (hotel_room_amenity_id) REFERENCES hotel_room_amenities (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -148,11 +148,11 @@ create table if not exists hotel_rooms_hotel_room_amenities_rel
 
 create table if not exists hotel_room_rate
 (
-    id serial primary key,
-    hotel_rooms_id int,
-    feed_type_id   int,
+    id             serial primary key,
+    hotel_rooms_id int            not null,
+    feed_type_id   int            not null,
     title          varchar(50)    not null,
-    price          numeric(10, 2) not null,
+    price          numeric(10, 2) not null check ( price >= 0 ),
     payment_type   varchar(50),
     is_refund      boolean,
     CONSTRAINT fk_hotel_rooms_hotel_room_rate FOREIGN KEY (hotel_rooms_id) references hotel_rooms (id) ON DELETE CASCADE ON UPDATE CASCADE,

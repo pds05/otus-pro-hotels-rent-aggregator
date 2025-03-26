@@ -2,6 +2,7 @@ package ru.otus.java.pro.result.project.hotels.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -18,6 +19,7 @@ public class HotelsHotelAmenity {
     @EmbeddedId
     private HotelsHotelAmenityKey primaryKey;
 
+    @NotNull
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -25,6 +27,7 @@ public class HotelsHotelAmenity {
     @MapsId(HotelsHotelAmenityKey_.HOTEL_ID)
     private Hotel hotel;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "hotel_amenity_id")

@@ -1,16 +1,20 @@
 package ru.otus.java.pro.result.project.hotels.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,18 +30,22 @@ import java.util.stream.Stream;
 public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, length = 8)
     private String id;
 
+    @NotEmpty
     @Column(name = "login", length = 50)
     private String login;
 
+    @NotEmpty
     @Column(name = "password")
     private String password;
 
+    @NotEmpty
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
+    @NotEmpty
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
@@ -47,6 +55,7 @@ public class UserProfile {
     @Column(name = "birthday_date")
     private LocalDate birthdayDate;
 
+    @Length(min = 11, max = 11)
     @Column(name = "phone_number", length = 11)
     private String phoneNumber;
 
@@ -65,7 +74,7 @@ public class UserProfile {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "userProfile")
+    @OneToMany(mappedBy = UserOrder_.USER_PROFILE)
     private Set<UserOrder> userOrders = new LinkedHashSet<>();
 
     public String printFullName(){

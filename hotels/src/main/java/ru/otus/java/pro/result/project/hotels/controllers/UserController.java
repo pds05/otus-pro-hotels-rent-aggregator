@@ -31,10 +31,12 @@ public class UserController {
     private final UserProfileService userProfileService;
     private final UserOrderService userOrderService;
 
-    @Operation(summary = "Получить все бронирования пользователя",
-            responses = @ApiResponse(description = "Успешный ответ", responseCode = "200",
+    @Operation(summary = "Получить все бронирования пользователя", responses = {
+            @ApiResponse(description = "Успешный ответ", responseCode = "200",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserOrderDto.class)),
-                            mediaType = MediaType.APPLICATION_JSON_VALUE)))
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(description = "Пользователь не существует", responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+            @ApiResponse(description = "Пользователь отключен", responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/order")
     public List<UserOrderDto> getUserOrders(
@@ -44,10 +46,13 @@ public class UserController {
         return userOrderService.findUserOrders(userId).stream().map(UserOrderDto::mapping).toList();
     }
 
-    @Operation(summary = "Получить данные по бронированию",
-            responses = @ApiResponse(description = "Успешный ответ", responseCode = "200",
+    @Operation(summary = "Получить данные по бронированию", responses = {
+            @ApiResponse(description = "Успешный ответ", responseCode = "200",
                     content = @Content(schema = @Schema(implementation = UserOrderDto.class),
-                            mediaType = MediaType.APPLICATION_JSON_VALUE)))
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(description = "Пользователь не существует", responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+            @ApiResponse(description = "Пользователь отключен", responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+    })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/order/{id}")
     public UserOrderDto getUserOrder(
@@ -55,6 +60,24 @@ public class UserController {
             @OrderValid
             @PathVariable(name = "id") String order) {
         return UserOrderDto.mapping(userOrderService.findUserOrder(order));
+    }
+
+    @Operation(summary = "Метод отмены бронирования", responses = {
+            @ApiResponse(description = "Успешный ответ", responseCode = "200",
+                    content = @Content(schema = @Schema(implementation = UserOrderDto.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(description = "Бронирование не подлежит отмене", responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = ErrorDto.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(description = "Пользователь не существует", responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+            @ApiResponse(description = "Пользователь отключен", responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/order/cancel")
+    public UserOrderDto cancelUserOrder(
+            @Parameter(description = "Номер бронирования", required = true, example = "00000001-1")
+            @OrderValid @RequestParam String order) {
+        return UserOrderDto.mapping(userOrderService.canceledUserOrder(order));
     }
 
     @Operation(summary = "Метод регистрации нового пользователя", responses = {
@@ -68,24 +91,49 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public UserDto createUserProfile(
-            @Parameter(description = "Данные пользователя", required = true)
+            @Parameter(description = "Параметры пользователя", required = true)
             @Valid @RequestBody UserDtoRq userDtoRq) {
         return UserDto.mapping(userProfileService.createUserProfile(userDtoRq));
     }
 
-    @Operation(summary = "Метод отмены бронирования", responses = {
-            @ApiResponse(description = "Успешный ответ", responseCode = "200",
-                    content = @Content(schema = @Schema(implementation = UserOrderDto.class),
-                            mediaType = MediaType.APPLICATION_JSON_VALUE)),
-            @ApiResponse(description = "Бронирование не подлежит отмене", responseCode = "400",
-                    content = @Content(schema = @Schema(implementation = ErrorDto.class),
-                            mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @Operation(summary = "Запрос профиля пользователя по идентификатору", responses = {
+            @ApiResponse(description = "Успешный ответ", responseCode = "200", content = @Content(schema = @Schema(implementation = UserDto.class))),
+            @ApiResponse(description = "Пользователь не существует", responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+            @ApiResponse(description = "Пользователь отключен", responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/order/cancel")
-    public UserOrderDto cancelUserOrder(
-            @Parameter(description = "Номер бронирования", required = true, example = "00000001-1")
-            @OrderValid @RequestParam String order) {
-        return UserOrderDto.mapping(userOrderService.canceledUserOrder(order));
+    @GetMapping("{id}")
+    public UserDto getUserProfile(
+            @Parameter(description = "Идентификатор пользователя", required = true)
+            @Pattern(regexp = "\\d{8}")
+            @PathVariable(name = "id") String userId) {
+        return UserDto.mapping(userProfileService.findUserProfile(userId));
     }
+
+    @Operation(summary = "Отключение профиля пользователя", responses = {
+            @ApiResponse(description = "Успешный ответ", responseCode = "200", content = @Content(schema = @Schema(implementation = UserDto.class))),
+            @ApiResponse(description = "Пользователь не существует", responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/delete/{id}")
+    public void deleteUserProfile(
+            @Parameter(description = "Идентификатор пользователя", required = true)
+            @Pattern(regexp = "\\d{8}")
+            @PathVariable(name = "id") String userId) {
+        userProfileService.deleteUserProfile(userId);
+    }
+
+    @Operation(summary = "Возобновление профиля пользователя", responses = {
+            @ApiResponse(description = "Успешный ответ", responseCode = "200", content = @Content(schema = @Schema(implementation = UserDto.class))),
+            @ApiResponse(description = "Пользователь не существует", responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/activate/{id}")
+    public UserDto activateUserProfile(
+            @Parameter(description = "Идентификатор пользователя", required = true)
+            @Pattern(regexp = "\\d{8}")
+            @PathVariable(name = "id") String userId) {
+        return UserDto.mapping(userProfileService.activateUserProfile(userId));
+    }
+
 }

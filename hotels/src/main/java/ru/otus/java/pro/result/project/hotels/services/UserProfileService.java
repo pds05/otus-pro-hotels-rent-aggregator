@@ -10,4 +10,10 @@ public interface UserProfileService {
     UserProfile createUserProfile(UserDtoRq userDtoRq);
 
     UserProfile findUserProfile(String id);
+
+    UserProfile updateUserProfile(UserDtoRq userDtoRq);
+
+    UserProfile activateUserProfile(String id);
+
+    void deleteUserProfile(String id);
 }

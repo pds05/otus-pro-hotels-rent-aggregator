@@ -1,6 +1,7 @@
 package ru.otus.java.pro.result.project.hotels.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 @ToString
@@ -20,6 +21,7 @@ public class CtCity {
     @Column(name = "phone_prefix", length = 6)
     private String phonePrefix;
 
+    @NotEmpty
     @Column(name = "title", length = 50)
     private String title;
 

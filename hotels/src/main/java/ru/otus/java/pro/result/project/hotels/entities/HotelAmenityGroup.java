@@ -2,6 +2,7 @@ package ru.otus.java.pro.result.project.hotels.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.LinkedHashSet;
@@ -21,6 +22,7 @@ public class HotelAmenityGroup {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @NotEmpty
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
@@ -28,7 +30,7 @@ public class HotelAmenityGroup {
     private Integer orderNum;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "hotelAmenityGroup")
+    @OneToMany(mappedBy = HotelAmenity_.HOTEL_AMENITY_GROUP)
     private Set<HotelAmenity> hotelAmenities = new LinkedHashSet<>();
 
 }

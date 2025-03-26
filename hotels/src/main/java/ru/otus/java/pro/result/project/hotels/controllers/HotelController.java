@@ -72,7 +72,7 @@ public class HotelController {
                             mediaType = MediaType.APPLICATION_JSON_VALUE)))
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public HotelDto getHotelByTitle(
+    public HotelDto getHotelById(
             @Parameter(description = "Идентификатор отеля", required = true)
             @Positive @PathVariable("id") int hotelId) {
         return HotelDto.mapping(hotelsService.findHotel(hotelId));

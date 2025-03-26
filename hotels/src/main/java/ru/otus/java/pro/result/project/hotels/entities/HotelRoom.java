@@ -2,6 +2,9 @@ package ru.otus.java.pro.result.project.hotels.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
@@ -24,18 +27,21 @@ public class HotelRoom {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @NotNull
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
+    @NotEmpty
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
     @Column(name = "description")
     private String description;
 
+    @Positive
     @Column(name = "size")
     private Short size;
 
@@ -50,6 +56,7 @@ public class HotelRoom {
     @Column(name = "available_count")
     private Short availableCount;
 
+    @Positive
     @Column(name = "max_guests")
     private Short maxGuests;
 

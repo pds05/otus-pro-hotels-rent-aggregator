@@ -125,7 +125,10 @@ values ('Собственная ванная комната'),
        ('Постельное бельё'),
        ('Халат'),
        ('Чайник'),
-       ('Холодильник')
+       ('Холодильник');
+
+insert into api_users(login, password, description, endpoint_path)
+values ('aggregator', 'password', 'hotels aggregator service', '*');
 
 
 

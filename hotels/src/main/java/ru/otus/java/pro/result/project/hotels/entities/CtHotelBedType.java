@@ -1,6 +1,7 @@
 package ru.otus.java.pro.result.project.hotels.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 @ToString
@@ -16,6 +17,7 @@ public class CtHotelBedType {
     @Column(name = "id", nullable = false)
     private Short id;
 
+    @NotEmpty
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 

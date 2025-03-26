@@ -30,7 +30,8 @@ public class UserOrderServiceImpl implements UserOrderService {
         try {
             String userProfileId = order.split("-")[0];
             int userOrderId = Integer.parseInt(order.split("-")[1]);
-            return userOrderRepository.findUserOrder(userOrderId, userProfileId).orElseThrow(() -> new ResourceNotFoundException("Order not exist"));
+            UserProfile user = userProfileService.findUserProfile(userProfileId);
+            return userOrderRepository.findUserOrder(userOrderId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("Order not exist"));
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             throw new ResourceNotFoundException("Order is invalid");
         }
@@ -38,13 +39,14 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Override
     public List<UserOrder> findUserOrders(String userId) {
-        return userOrderRepository.findUserOrderByUserProfile_Id(userId);
+        UserProfile user = userProfileService.findUserProfile(userId);
+        return userOrderRepository.findUserOrderByUserProfile_Id(user.getId());
     }
 
     @Transactional
     @Override
     public UserOrder createUserOrder(UserOrderCreateDtoRq orderDtoRq) {
-        log.debug("Creating new order, {}", orderDtoRq);
+        log.info("Creating new order, {}", orderDtoRq);
 
         UserProfile user = userProfileService.findUserProfile(orderDtoRq.getUserId());
         Hotel hotel = hotelsService.findHotel(orderDtoRq.getHotelId());
@@ -65,22 +67,23 @@ public class UserOrderServiceImpl implements UserOrderService {
         userOrder.setStatus(UserOrderStatus.CREATED);
         userOrder.setIsRefund(rate.getIsRefund());
         userOrder = userOrderRepository.save(userOrder);
-        log.debug("Order is created {}", userOrder);
+        log.info("Order is created {}", userOrder);
         return userOrder;
     }
 
     @Transactional
     @Override
     public UserOrder canceledUserOrder(String order) {
-        log.debug("Order canceling, {}", order);
+        log.info("Order canceling, {}", order);
         try {
             String userProfileId = order.split("-")[0];
             int userOrderId = Integer.parseInt(order.split("-")[1]);
-            UserOrder userOrder = userOrderRepository.findUserOrder(userOrderId, userProfileId).orElseThrow(() -> new ResourceNotFoundException("Order not exist"));
+            UserProfile user = userProfileService.findUserProfile(userProfileId);
+            UserOrder userOrder = userOrderRepository.findUserOrder(userOrderId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("Order not exist"));
             if (userOrder.getIsRefund()) {
                 userOrder.setStatus(UserOrderStatus.CANCELED);
                 userOrder = userOrderRepository.save(userOrder);
-                log.debug("Order is canceled, {}", order);
+                log.info("Order is canceled, {}", order);
                 return userOrder;
             } else {
                 throw new BusinessLogicException("ORDER_NOT_REFUNDED", "order not refunded");

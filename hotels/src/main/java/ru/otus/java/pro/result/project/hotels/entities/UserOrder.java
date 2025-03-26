@@ -2,12 +2,13 @@ package ru.otus.java.pro.result.project.hotels.entities;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import org.hibernate.annotations.*;
 import ru.otus.java.pro.result.project.hotels.lib.UserOrderStatus;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -24,14 +25,17 @@ public class UserOrder {
     @EmbeddedId
     private UserOrderKey userOrderId;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_room_id", referencedColumnName = "id")
     private HotelRoom hotelRoom;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_room_rate_id", referencedColumnName = "id")
     private HotelRoomRate hotelRoomRate;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_profile_id", insertable = false, updatable = false)
@@ -47,6 +51,7 @@ public class UserOrder {
     @Column(name = "status")
     private UserOrderStatus status;
 
+    @PositiveOrZero
     @Column(name = "order_price", precision = 10, scale = 2)
     private BigDecimal orderPrice;
 
@@ -64,7 +69,7 @@ public class UserOrder {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "userOrder")
+    @OneToMany(mappedBy = OrderGuest_.USER_ORDER)
     private Set<OrderGuest> orderGuests = new LinkedHashSet<>();
 
 }

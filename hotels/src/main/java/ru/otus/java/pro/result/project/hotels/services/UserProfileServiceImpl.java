@@ -20,7 +20,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Transactional
     @Override
     public UserProfile createUserProfile(UserDtoRq userDtoRq) {
-        log.debug("Creating new user profile, {}", userDtoRq);
+        log.info("Creating new user profile, {}", userDtoRq);
         repository.findByEmailOrPhoneNumber(userDtoRq.getEmail(), userDtoRq.getPhoneNumber()).ifPresent(profile -> {
             throw new BusinessLogicException("USER_ALREADY_EXIST", "user already exists with " + ((userDtoRq.getEmail() != null && userDtoRq.getEmail().equalsIgnoreCase(profile.getEmail())) ? "email " + userDtoRq.getEmail() : "phoneNumber " + userDtoRq.getPhoneNumber()));
         });
@@ -35,12 +35,45 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .login(StringUtils.isBlank(userDtoRq.getEmail()) ? userDtoRq.getPhoneNumber() : userDtoRq.getEmail())
                 .build();
         userProfile = repository.save(userProfile);
-        log.debug("User profile is created, {}", userProfile);
+        log.info("User profile is created, {}", userProfile);
         return userProfile;
     }
 
     @Override
     public UserProfile findUserProfile(String id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
+        UserProfile userProfile = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
+        if (!userProfile.getIsActive()) {
+            throw new BusinessLogicException("USER_BLOCKED", "User profile is blocked");
+        }
+        return userProfile;
     }
+
+    @Override
+    public UserProfile updateUserProfile(UserDtoRq userDtoRq) {
+        //TODO бизнес-метод на подумать
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserProfile(String id) {
+        log.info("Deleting user profile, {}", id);
+        UserProfile userProfile = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
+        userProfile.setIsActive(false);
+        repository.save(userProfile);
+        log.info("User profile is blocked, {}", userProfile);
+    }
+
+    @Override
+    public UserProfile activateUserProfile(String id) {
+        log.info("Activating user profile, {}", id);
+        UserProfile userProfile = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
+        if (!userProfile.getIsActive()) {
+            userProfile.setIsActive(true);
+            repository.save(userProfile);
+        }
+        log.info("User profile is activated, {}", userProfile);
+        return userProfile;
+    }
+
 }
