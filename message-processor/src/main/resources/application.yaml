@@ -1,0 +1,17 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: message-shifter
+  kafka:
+    producer:
+      request-topic: hotelSearchRequest
+      reply-topic: hotelSearchReplies
+common:
+
+
+
+logging:
+  level:
+    ru.otus: DEBUG
+

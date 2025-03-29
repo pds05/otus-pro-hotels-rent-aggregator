@@ -1,0 +1,61 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: hotels-aggregator
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/hotels_aggregator_db
+    username: ha_admin
+    password: ha_admin_pass
+    jpa:
+      show-sql: true
+      open-in-view: false
+      properties:
+        hibernate:
+          format_sql: true
+  flyway:
+#    baseline-on-migrate: true
+  kafka:
+    producer:
+      bootstrap-servers: 127.0.0.1:9092
+      properties:
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topics-suffix:
+      request: request
+      reply: reply
+common:
+  email-suffix: ha.ru
+  api-client-bean-prefix: apiService
+integration:
+  services:
+    nifNif:
+      url: http://localhost:8181/api/v1/
+      read-timeout: 15s
+      connect-timeout: 3s
+    nafNaf:
+      url: http://localhost:8182/api/v1/
+      read-timeout: 10s
+      connect-timeout: 5s
+    nufNuf:
+      url: http://localhost:8183/api/v1/
+      read-timeout: 10s
+      connect-timeout: 5s
+springdoc:
+  swagger-ui:
+    path: /swagger
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    #    org.hibernate.orm.jdbc.extract: TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.zalando.logbook.Logbook: TRACE
+    ru.otus: DEBUG
+

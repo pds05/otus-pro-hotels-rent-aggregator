@@ -12,11 +12,6 @@ import java.util.List;
 @Component
 @Service
 public class RequestParametersCache {
-    private final CtHotelTypeRepository ctHotelTypeRepository;
-    private final CtHotelAmenitiesRepository ctHotelAmenitiesRepository;
-    private final CtHotelRoomAmenitiesRepository ctHotelRoomAmenitiesRepository;
-    private final CtHotelFeedTypeRepository ctHotelFeedTypeRepository;
-    private final CtHotelBedTypeRepository ctHotelBedTypeRepository;
 
     private final List<CtHotelType> hotelTypes;
     private final List<HotelAmenity> hotelAmenities;
@@ -25,19 +20,16 @@ public class RequestParametersCache {
     private final List<CtHotelBedType> ctHotelBedTypes;
 
     public RequestParametersCache(CtHotelTypeRepository ctHotelTypeRepository, CtHotelAmenitiesRepository ctHotelAmenitiesRepository, CtHotelRoomAmenitiesRepository ctHotelRoomAmenitiesRepository, CtHotelFeedTypeRepository ctHotelFeedTypeRepository, CtHotelBedTypeRepository ctHotelBedTypeRepository) {
-        this.ctHotelTypeRepository = ctHotelTypeRepository;
+
         this.hotelTypes = ctHotelTypeRepository.findAll();
 
-        this.ctHotelAmenitiesRepository = ctHotelAmenitiesRepository;
         this.hotelAmenities = ctHotelAmenitiesRepository.findAll();
 
-        this.ctHotelRoomAmenitiesRepository = ctHotelRoomAmenitiesRepository;
         this.hotelRoomAmenities = ctHotelRoomAmenitiesRepository.findAll();
 
-        this.ctHotelFeedTypeRepository = ctHotelFeedTypeRepository;
         this.ctHotelFeedTypes = ctHotelFeedTypeRepository.findAll();
 
-        this.ctHotelBedTypeRepository = ctHotelBedTypeRepository;
         this.ctHotelBedTypes = ctHotelBedTypeRepository.findAll();
+
     }
 }

@@ -1,7 +1,9 @@
-package ru.otus.java.pro.result.project.hotels.entities;
+package ru.otus.java.pro.result.project.hotelsaggregator.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,7 +12,6 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,10 +40,12 @@ public class UserProfile {
     private String password;
 
     @NotEmpty
+    @NotNull
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
     @NotEmpty
+    @NotNull
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
@@ -56,10 +59,11 @@ public class UserProfile {
     @Column(name = "phone_number", length = 11)
     private String phoneNumber;
 
+    @Email
     @Column(name = "email")
     private String email;
 
-    @ColumnDefault(value = "true")
+    @ColumnDefault("true")
     @Column(name = "is_active")
     private Boolean isActive;
 
@@ -72,7 +76,7 @@ public class UserProfile {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = UserOrder_.USER_PROFILE)
-    private Set<UserOrder> userOrders = new LinkedHashSet<>();
+    private Set<UserOrder> userOrders;
 
     public String printFullName(){
         return Stream.of(lastName, firstName, middleName).filter(Objects::nonNull).collect(Collectors.joining( " "));
