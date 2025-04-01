@@ -1,4 +1,4 @@
-package ru.otus.java.pro.result.project.hotelsaggregator.entities;
+package ru.otus.java.pro.result.project.hotelsaggregator.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

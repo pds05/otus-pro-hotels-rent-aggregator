@@ -1,12 +1,10 @@
-package ru.otus.java.pro.result.project.hotelsaggregator.entities;
+package ru.otus.java.pro.result.project.messageprocessor.entities;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.*;
-import ru.otus.java.pro.result.project.hotelsaggregator.enums.BusinessMethodEnum;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -15,8 +13,8 @@ import java.util.Set;
 import static org.hibernate.type.SqlTypes.INTERVAL_SECOND;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -28,7 +26,6 @@ public class Provider {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @NotEmpty
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
@@ -38,7 +35,6 @@ public class Provider {
     @Column(name = "property_name")
     private String propertyName;
 
-    @NotNull
     @Column(name = "api_url", nullable = false)
     private String apiUrl;
 
@@ -48,7 +44,6 @@ public class Provider {
     @Column(name = "api_password")
     private String apiPassword;
 
-    @ColumnDefault("true")
     @Column(name = "is_active")
     private Boolean isActive;
 
@@ -70,9 +65,5 @@ public class Provider {
 
     @OneToMany(mappedBy = ProviderApi_.PROVIDER)
     private Set<ProviderApi> providerApis;
-
-    public ProviderApi getProviderApi(BusinessMethodEnum businessMethod) {
-        return providerApis.stream().filter(api -> api.getBusinessMethod().equals(businessMethod)).findFirst().orElse(null);
-    }
 
 }

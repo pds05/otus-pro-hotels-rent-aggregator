@@ -8,54 +8,59 @@ spring:
     url: jdbc:postgresql://localhost:5432/hotels_aggregator_db
     username: ha_admin
     password: ha_admin_pass
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 4
     jpa:
       show-sql: true
       open-in-view: false
       properties:
         hibernate:
           format_sql: true
-  flyway:
-#    baseline-on-migrate: true
   kafka:
     producer:
-      bootstrap-servers: 127.0.0.1:9092
-      properties:
-        spring:
-          json:
-            add:
-              type:
-                headers: false
+      send-timeout: 5S
+      bootstrap-servers: localhost:9091,localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    topics-suffix:
-      request: request
-      reply: reply
+#      properties:
+#        spring.json.add.type.headers: false
+    consumer:
+      reply-timeout: 20S
+      reply-container-init-timeout: 10S
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.value.default.type: 'ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDtos'
+#        spring.json.trusted.packages: 'ru.otus.java.pro.result.project.hotelsaggregator.dtos'
+    topics:
+      partitions-count: 2
+      replicas-count: 2
+      name-suffixes:
+        request-topic: request
+        reply-topic: reply
+    consumer-group: messageProcessorsGroup
+    backoff:
+      interval: 5000
+      max-failure: 2
 common:
-  email-suffix: ha.ru
-  api-client-bean-prefix: apiService
+  email-domain: ha.ru
 integration:
-  services:
-    nifNif:
-      url: http://localhost:8181/api/v1/
-      read-timeout: 15s
-      connect-timeout: 3s
-    nafNaf:
-      url: http://localhost:8182/api/v1/
-      read-timeout: 10s
-      connect-timeout: 5s
-    nufNuf:
-      url: http://localhost:8183/api/v1/
-      read-timeout: 10s
-      connect-timeout: 5s
+  providers:
+    enables:
+      - nifNif
+#      - nafNaf
+    exclude:
+#      - nufNuf
 springdoc:
   swagger-ui:
     path: /swagger
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
-    #    org.hibernate.orm.jdbc.extract: TRACE
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.zalando.logbook.Logbook: TRACE
-    ru.otus: DEBUG
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
+#    #    org.hibernate.orm.jdbc.extract: TRACE
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#    org.zalando.logbook.Logbook: TRACE
+#    ru.otus: DEBUG
 

@@ -1,4 +1,4 @@
-package ru.otus.java.pro.result.project.messageshifter.dtos;
+package ru.otus.java.pro.result.project.messageprocessor.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

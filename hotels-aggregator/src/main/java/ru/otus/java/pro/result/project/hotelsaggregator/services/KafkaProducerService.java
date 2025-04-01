@@ -1,5 +1,6 @@
 package ru.otus.java.pro.result.project.hotelsaggregator.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -10,15 +11,16 @@ import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.stereotype.Service;
-import ru.otus.java.pro.result.project.hotelsaggregator.configs.ApplicationConfig;
-import ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDto;
-import ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDtoRq;
-import ru.otus.java.pro.result.project.hotelsaggregator.entities.BusinessMethodEnum;
+import ru.otus.java.pro.result.project.hotelsaggregator.configs.KafkaConfig;
+import ru.otus.java.pro.result.project.hotelsaggregator.configs.KafkaTopicsPropertyConfig;
+import ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDtos;
+import ru.otus.java.pro.result.project.hotelsaggregator.enums.BusinessMethodEnum;
 import ru.otus.java.pro.result.project.hotelsaggregator.entities.Provider;
+import ru.otus.java.pro.result.project.hotelsaggregator.entities.ProviderApi;
 import ru.otus.java.pro.result.project.hotelsaggregator.exceptions.ApplicationException;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -26,29 +28,38 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Service
 public class KafkaProducerService {
-    public static final String KAFKA_SERVICE_HEADER = "kafka_serviceName";
-    public static final String KAFKA_SERVICE_URI = "kafka_serviceUri";
-    private final ApplicationConfig applicationConfig;
+    public static final String KAFKA_PROVIDER_HEADER = "kafka_providerName";
+    public static final String KAFKA_BUSINESS_METHOD = "kafka_businessMethod";
+    private final KafkaTopicsPropertyConfig kafkaTopicsPropertyConfig;
+    private final KafkaConfig kafkaConfig;
     private final List<Provider> providers;
+//    private final ObjectMapper objectMapper;
 
-    private final ReplyingKafkaTemplate<String, HotelDtoRq, List<HotelDto>> replyingTemplate;
+    private final ReplyingKafkaTemplate<String, Object, Object> requestReplyKafkaTemplate;
 
     @SneakyThrows
-    public List<HotelDto> sendMessage(HotelDtoRq hotelDtoRq, BusinessMethodEnum method) {
-        if (!replyingTemplate.waitForAssignment(Duration.ofSeconds(10))) {
+    public <T> T sendMessage(Object message, BusinessMethodEnum method, Class<T> responseClass) {
+        if (!requestReplyKafkaTemplate.waitForAssignment(kafkaConfig.getReplyContainerInitTimeout())) {
             throw new ApplicationException("Reply container did not initialize");
         }
-        ProducerRecord<String, HotelDtoRq> record = new ProducerRecord<>(providers.get(0).getPropertyName() + applicationConfig.getRequestTopicSuffix(), hotelDtoRq);
-        record.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, (providers.get(0).getPropertyName() + applicationConfig.getReplyTopicSuffix()).getBytes()));
-        record.headers().add(KAFKA_SERVICE_HEADER, providers.get(0).getPropertyName().getBytes());
-        record.headers().add(KAFKA_SERVICE_URI, method.name().getBytes());
+        ProviderApi api = providers.get(0).getProviderApi(method);
+        ProducerRecord<String, Object> record = new ProducerRecord<>(api.createTopicName(kafkaTopicsPropertyConfig.getRequestTopicSuffix()), message);
+        record.headers().add(new RecordHeader(KafkaHeaders.REPLY_TOPIC, (api.createTopicName(kafkaTopicsPropertyConfig.getReplyTopicSuffix())).getBytes()));
+        record.headers().add(KAFKA_PROVIDER_HEADER, providers.get(0).getPropertyName().getBytes());
+        record.headers().add(KAFKA_BUSINESS_METHOD, method.name().getBytes());
+        record.headers().add(JsonDeserializer.TYPE_MAPPINGS, HotelDtos.class.getTypeName().getBytes());
+        RequestReplyFuture<String, Object, Object> replyFuture = requestReplyKafkaTemplate.sendAndReceive(record);
+        SendResult<String, Object> sendResult = replyFuture.getSendFuture().get(kafkaConfig.getSendTimeout().getSeconds(), TimeUnit.SECONDS);
 
-        RequestReplyFuture<String, HotelDtoRq, List<HotelDto>> replyFuture = replyingTemplate.sendAndReceive(record);
-        SendResult<String, HotelDtoRq> sendResult = replyFuture.getSendFuture().get(10, TimeUnit.SECONDS);
-        log.debug("Sent search hotel message: {}", sendResult.getRecordMetadata());
-        ConsumerRecord<String, List<HotelDto>> consumerRecord = replyFuture.get(10, TimeUnit.SECONDS);
-        log.debug("Return search result: {}", consumerRecord.value());
-        return consumerRecord.value();
+        log.debug("Message status: {}", sendResult.getRecordMetadata());
+        ConsumerRecord<String, Object> consumerRecord = replyFuture.get(kafkaConfig.getReplyTimeout().getSeconds(), TimeUnit.SECONDS);
+        //Если не отправлять потребителю заголовок 'spring.json.type.mapping' с типом объекта для десериализации ответа
+        //Или потребитель не возвращает заголовок '__TypeId__' с переложенным значением из полученного в запросе заголовка 'spring.json.type.mapping'
+        //Тогда десериализуем объект из строки с помощью objectMapper и указываем целевой тип
+        //ИЛИ же обеспечиваем одинаковый тип сообщения в поставщике и потребителе, тогда выполняется нативное преобразование на основе заголовка '__TypeId__'
+        //        HotelDtos resp = objectMapper.readValue(consumerRecord.value(), HotelDtos.class);
+        log.debug("Message result: {}", consumerRecord.value());
+        return (T) consumerRecord.value();
     }
 
 

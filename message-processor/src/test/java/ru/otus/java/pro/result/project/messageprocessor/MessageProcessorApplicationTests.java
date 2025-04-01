@@ -1,10 +1,10 @@
-package ru.otus.java.pro.result.project.messageshifter;
+package ru.otus.java.pro.result.project.messageprocessor;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MessageShifterApplicationTests {
+class MessageProcessorApplicationTests {
 
     @Test
     void contextLoads() {

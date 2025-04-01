@@ -1,13 +1,12 @@
-package ru.otus.java.pro.result.project.hotelsaggregator.entities;
+package ru.otus.java.pro.result.project.messageprocessor.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import ru.otus.java.pro.result.project.hotelsaggregator.enums.BusinessMethodEnum;
+import ru.otus.java.pro.result.project.messageprocessor.enums.BusinessMethodEnum;
 
 @Getter
 @Setter
@@ -19,14 +18,12 @@ public class ProviderApi {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @NotNull
     @Column(name = "path", nullable = false)
     private String path;
 
     @Column(name = "rest_method", length = 6)
     private String restMethod;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "business_method", nullable = false)
     private BusinessMethodEnum businessMethod;

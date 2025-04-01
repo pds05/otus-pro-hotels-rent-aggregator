@@ -45,7 +45,7 @@ public class HotelController {
                             mediaType = MediaType.APPLICATION_JSON_VALUE)))
     public List<HotelDto> getAllHotels(
             @Parameter(description = "Наименование населенного пункта", required = true, schema = @Schema(type = "string", maxLength = 50, example = "Москва"))
-            @NotBlank @Max(50) @RequestParam("city") String city) {
+            @NotBlank @RequestParam("city") String city) {
         return hotelsService.findHotels(city).stream().map(HotelDto::mapping).toList();
     }
 

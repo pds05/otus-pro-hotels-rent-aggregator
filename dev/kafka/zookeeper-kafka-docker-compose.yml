@@ -105,8 +105,9 @@ services:
     depends_on:
       - broker-1
       - broker-2
-      - broker-3
+#      - broker-3
     environment:
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker-1:29091,broker-2:29092,broker-3:29093
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker-1:29091,broker-2:29092,broker-3:29093
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker-1:29091,broker-2:29092
       DYNAMIC_CONFIG_ENABLED: 'true'

@@ -1,17 +1,62 @@
-server:
-  port: 8083
 spring:
   application:
-    name: message-shifter
+    name: message-processor
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hotels_aggregator_db
+    driver-class-name: org.postgresql.Driver
+    username: ha_admin
+    password: ha_admin_pass
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 4
+    jpa:
+      show-sql: true
+      open-in-view: false
+      properties:
+        hibernate:
+          format_sql: true
   kafka:
-    producer:
-      request-topic: hotelSearchRequest
-      reply-topic: hotelSearchReplies
-common:
+    bootstrap-servers: localhost:9091,localhost:9092
+    consumer-group: messageProcessorsGroup
+    topics:
+      name-suffixes:
+        request-topic: request
+        reply-topic: reply
+    backoff:
+      interval: 5000
+      max-failure: 2
+integration:
+  base:
+    url: http://localhost:8080/
+    read-timeout: 15s
+    connect-timeout: 5s
+    topic-prefix: baseProvider
+  providers:
+    nifNif:
+      url: http://localhost:8081/api/v1/
+      read-timeout: 10s
+      connect-timeout: 3s
+      topic-prefix: nifNif
+      enable: true
+    nafNaf:
+      url: http://localhost:8081/api/v1/
+      read-timeout: 10s
+      connect-timeout: 3s
+      topic-prefix: nafNaf
+      enable: false
+    nufNuf:
+      url: http://localhost:8083/api/v1/
+      read-timeout: 10s
+      connect-timeout: 3s
+      topic-prefix: nufNuf
+      enable: false
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#    org.zalando.logbook.Logbook: TRACE
+#    org.apache.kafka: INFO
+#    ru.otus: DEBUG
 
-
-
-logging:
-  level:
-    ru.otus: DEBUG
 

@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,10 +28,18 @@ public class GeneralController {
     private final UserProfileService userProfileService;
     private final SearchCollectorService searchCollectorService;
 
+    @GetMapping(value = "/search/filter")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectHotelDto searchFilterHotels(@ModelAttribute HotelDtoRq hotelDtoRq) {
+        return searchCollectorService.searchHotels(hotelDtoRq);
+    }
+
     @GetMapping(value = "/search")
     @ResponseStatus(HttpStatus.OK)
-    public CollectHotelDto searchHotel(@ModelAttribute HotelDtoRq hotelDtoRq) {
-        return searchCollectorService.searchHotels(hotelDtoRq);
+    public CollectHotelDto searchHotels(
+            @Parameter(description = "Наименование населенного пункта", required = true, schema = @Schema(type = "string", maxLength = 50, example = "Москва"))
+            @NotBlank @RequestParam("city") String city) {
+        return searchCollectorService.searchHotelsInCity(city);
     }
 
     @Operation(summary = "Метод регистрации нового пользователя", responses = {

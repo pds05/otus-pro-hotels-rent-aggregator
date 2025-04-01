@@ -14,6 +14,7 @@ import ru.otus.java.pro.result.project.hotelsaggregator.repositories.UserProfile
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository repository;
+
     @Override
     public UserProfile createUserProfile(UserDtoRq userDtoRq) {
         log.info("Creating new user profile, {}", userDtoRq);
