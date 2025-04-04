@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 @Configuration
 @OpenAPIDefinition
 public class SwaggerConfig {
+
     @Bean
     public OpenAPI swaggerApiConfig() {
         Info info = new Info()

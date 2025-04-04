@@ -1,4 +1,4 @@
-package ru.otus.java.pro.result.project.hotelsaggregator.configs;
+package ru.otus.java.pro.result.project.hotelsaggregator.configs.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,8 @@ import java.util.List;
 @Setter
 @ConfigurationProperties(prefix = "integration.providers")
 public class ProviderPropertyFileConfig {
+
     private List<String> enables;
+
     private List<String> exclude;
 }

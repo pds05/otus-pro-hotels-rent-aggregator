@@ -14,13 +14,10 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.otus.java.pro.result.project.messageprocessor.configs.RestClientRegistrator;
-import ru.otus.java.pro.result.project.messageprocessor.dtos.HotelDto;
-import ru.otus.java.pro.result.project.messageprocessor.dtos.HotelDtoRq;
 import ru.otus.java.pro.result.project.messageprocessor.entities.ProviderApi;
+import ru.otus.java.pro.result.project.messageprocessor.exceptions.ProviderException;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.MediaType.*;
@@ -29,25 +26,42 @@ import static org.springframework.http.MediaType.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@Service
-public class RestClientService {
+@Service(value = "restService")
+public class RestClientService implements RestService {
     private final ApplicationContext context;
     private final ObjectMapper objectMapper;
 
-    public <T> List<T> getRequest(ProviderApi api, Object request, Class<T> clazz) {
+    public <T> T getRequest(ProviderApi api, Object request) {
         UriBuilder uriBuilder = UriComponentsBuilder.fromPath(api.getPath());
-//        objectMapper.convertValue(request, LinkedMultiValueMap.class).forEach(uriBuilder::queryParam); //.forEach(uriBuilder::queryParam);
-
-        Map<String, String> map = objectMapper.convertValue(request, new TypeReference<Map<String,String>>() {});
+        Map<String, String> map = objectMapper.convertValue(request, new TypeReference<>() {
+        });
         LinkedMultiValueMap<String, String> linkedMultiValueMap = new LinkedMultiValueMap<>();
         map.forEach(linkedMultiValueMap::add);
         URI uri = uriBuilder.queryParams(linkedMultiValueMap).build();
+        if (log.isDebugEnabled()) {
+            log.debug("Sending request to provider={}, method=GET, url={}, uri={}",
+                    api.getProvider().getPropertyName(), api.getProvider().getApiUrl() + api.getPath(), uri);
+        }
         RestClient restClient = getRestClient(api.getProvider().getPropertyName());
-        return restClient.get()
+        T response = restClient.get()
                 .uri(uri)
                 .accept(APPLICATION_JSON)
                 .retrieve()
-                .body(new ParameterizedTypeReference<ArrayList<T>>() {});
+                .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(), (req, resp) -> {
+                    log.warn("Failed request: {}", req);
+                    throw new ProviderException("Failed request, status=" + resp.getStatusCode() + ", message=" + resp.getStatusText());
+                })
+                .body(new ParameterizedTypeReference<>() {
+                });
+        if (log.isDebugEnabled()) {
+            log.debug("Received response from provider={}, method=GET, url={}, uri={}",
+                    api.getProvider().getPropertyName(), api.getProvider().getApiUrl() + api.getPath(), uri);
+        }
+        if (log.isTraceEnabled()) {
+            log.trace("Received response from provider={}, method=GET, url={}, uri={}, data={}",
+                    api.getProvider().getPropertyName(), api.getProvider().getApiUrl() + api.getPath(), uri, response);
+        }
+        return response;
     }
 
     public <T> T postRequest(ProviderApi api, Class<T> dtoClass) {

@@ -7,7 +7,7 @@
               class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
-                %white(%date{HH:mm:ss.SSS}) %highlight(%-5level) [%yellow(%t)] %logger{5} : %msg%n%throwable
+                %white(%date{HH:mm:ss.SSS}) %highlight(%-5level) [%thread] [%yellow(%t)] %logger{10} : %msg%n%throwable
             </Pattern>
         </layout>
     </appender>
@@ -37,13 +37,19 @@
         <appender-ref ref="ConsoleOutput" />
     </root>
 
-    <logger name="ru.otus" level="trace" additivity="false">
+    <logger name="ru.otus" level="debug" additivity="false">
         <appender-ref ref="LogFile" />
         <appender-ref ref="ConsoleOutput" />
     </logger>
 
-    <logger name="org.apache.kafka" level="trace" additivity="false">
+    <logger name="org.apache.kafka" level="info" additivity="false">
         <appender-ref ref="LogFile" />
+        <appender-ref ref="ConsoleOutput" />
+    </logger>
+
+    <logger name="org.springframework.kafka" level="info" additivity="false">
+        <appender-ref ref="LogFile" />
+        <appender-ref ref="ConsoleOutput" />
     </logger>
 
 </configuration>

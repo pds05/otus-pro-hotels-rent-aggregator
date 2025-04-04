@@ -39,15 +39,4 @@ public class ProviderApi {
     @JoinColumn(name = "provider_id")
     private Provider provider;
 
-    public String createTopicName(String directionSuffix) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(provider.getPropertyName())
-                .append("_")
-                .append(businessMethod.name().toLowerCase());
-        if (directionSuffix != null && !directionSuffix.isEmpty()) {
-            builder.append("_").append(directionSuffix.toLowerCase());
-        }
-        return builder.toString();
-    }
-
 }

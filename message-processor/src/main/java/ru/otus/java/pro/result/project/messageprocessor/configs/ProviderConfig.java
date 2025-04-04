@@ -1,16 +1,20 @@
 package ru.otus.java.pro.result.project.messageprocessor.configs;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.otus.java.pro.result.project.messageprocessor.configs.properties.ProviderPropertyFileConfig;
 import ru.otus.java.pro.result.project.messageprocessor.entities.Provider;
+import ru.otus.java.pro.result.project.messageprocessor.exceptions.ApplicationException;
 import ru.otus.java.pro.result.project.messageprocessor.services.ProviderService;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Configuration
-public class ProviderPropertyConfig {
+public class ProviderConfig {
     private final ProviderService providerService;
     private final ProviderPropertyFileConfig providerPropertyFileConfig;
 
@@ -42,8 +46,10 @@ public class ProviderPropertyConfig {
                         ).orElse(dbProvider))
                 .filter(provider -> provider.getIsActive().equals(true))
                 .toList();
+        if (providers.isEmpty()) {
+            throw new ApplicationException("No enables providers in configuration");
+        }
+        log.info("Service providers initiated: {}", providers);
         return providers;
     }
-
-
 }

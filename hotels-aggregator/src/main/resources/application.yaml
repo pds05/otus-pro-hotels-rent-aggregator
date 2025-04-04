@@ -18,40 +18,40 @@ spring:
         hibernate:
           format_sql: true
   kafka:
-    producer:
-      send-timeout: 5S
-      bootstrap-servers: localhost:9091,localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-#      properties:
-#        spring.json.add.type.headers: false
-    consumer:
-      reply-timeout: 20S
-      reply-container-init-timeout: 10S
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.value.default.type: 'ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDtos'
-#        spring.json.trusted.packages: 'ru.otus.java.pro.result.project.hotelsaggregator.dtos'
+    brokers:
+      - localhost:9091
+      - localhost:9092
+    consumer-group: messageProcessorsGroup
+    send-timeout: 2S
+    common-reply-timeout: 25S
+    reply-timeout: 10S
+    reply-container-init-timeout: 10S
+    backoff-interval: 2S
+    backoff-max-failure: 2
     topics:
       partitions-count: 2
       replicas-count: 2
-      name-suffixes:
-        request-topic: request
-        reply-topic: reply
-    consumer-group: messageProcessorsGroup
-    backoff:
-      interval: 5000
-      max-failure: 2
+      request-topic-suffix: request
+      reply-topic-suffix: reply
+#Включение режима 'async-mode' должно быть согласовано у производителя и всех потребителей
+    async-mode:
+     enable: true
+     partial-on-timeout: true
+     common-reply-timeout: 25S
+     reply-timeout: 10S
+     topic-prefix: aggregate
 common:
   email-domain: ha.ru
+#Интеграция работает только с включенными сервисами в базе и локальных настройках
+#Если локальные настройки интеграции не заданы, то по-умолчанию применяются активные сервисы из базы
+#Локальные настройки имеют более высокий приоритет, чем в базе
 integration:
   providers:
     enables:
       - nifNif
 #      - nafNaf
     exclude:
-#      - nufNuf
+      - nufNuf
 springdoc:
   swagger-ui:
     path: /swagger

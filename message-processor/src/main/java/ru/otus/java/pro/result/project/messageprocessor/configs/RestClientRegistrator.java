@@ -7,9 +7,11 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
+import ru.otus.java.pro.result.project.messageprocessor.configs.properties.ProviderPropertyFileConfig;
 import ru.otus.java.pro.result.project.messageprocessor.entities.Provider;
 
 import java.util.Optional;
+
 
 @Slf4j
 public class RestClientRegistrator {
@@ -37,6 +39,7 @@ public class RestClientRegistrator {
                                 factory.setReadTimeout(provider.getReadTimeout());
                                 return RestClient.builder().requestFactory(factory).baseUrl(provider.getApiUrl()).build();
                             });
+                    log.info("Rest client '{}' launched", beanName);
                 });
     }
 }

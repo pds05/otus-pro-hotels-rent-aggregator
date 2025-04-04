@@ -1,4 +1,4 @@
-package ru.otus.java.pro.result.project.hotelsaggregator.configs;
+package ru.otus.java.pro.result.project.hotelsaggregator.configs.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties({
         ProviderPropertyFileConfig.class,
-        KafkaTopicsPropertyConfig.class})
+        KafkaPropertyConfig.class})
 public class ApplicationPropertyConfig {
 
     @Value("${common.email-domain}")
