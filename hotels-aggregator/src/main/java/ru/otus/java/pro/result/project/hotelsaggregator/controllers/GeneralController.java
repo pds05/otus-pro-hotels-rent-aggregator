@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.java.pro.result.project.hotelsaggregator.dtos.internals.CollectHotelDto;
+import ru.otus.java.pro.result.project.hotelsaggregator.dtos.CollectHotelDto;
 import ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDtoRq;
 import ru.otus.java.pro.result.project.hotelsaggregator.dtos.UserDto;
 import ru.otus.java.pro.result.project.hotelsaggregator.dtos.UserDtoRq;

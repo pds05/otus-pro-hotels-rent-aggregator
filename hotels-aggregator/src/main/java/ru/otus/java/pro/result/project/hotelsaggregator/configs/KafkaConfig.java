@@ -70,7 +70,7 @@ public class KafkaConfig {
         config.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        config.put(JsonDeserializer.TYPE_MAPPINGS, "providerResponseDto:ru.otus.java.pro.result.project.hotelsaggregator.dtos.internals.ProviderResponseDto, " +
+        config.put(JsonDeserializer.TYPE_MAPPINGS, "providerResponseDto:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.ProviderResponseDto, " +
                 "hotelDto:ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDto");
         if (kafkaPropertyConfig.isAsyncModeEnabled()) {
             config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);

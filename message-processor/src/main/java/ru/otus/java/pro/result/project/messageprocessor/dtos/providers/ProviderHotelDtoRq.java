@@ -1,4 +1,4 @@
-package ru.otus.java.pro.result.project.messageprocessor.dtos;
+package ru.otus.java.pro.result.project.messageprocessor.dtos.providers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HotelDtoRq {
+public class ProviderHotelDtoRq {
     private String city;
     private String hotel;
     private Integer stars;

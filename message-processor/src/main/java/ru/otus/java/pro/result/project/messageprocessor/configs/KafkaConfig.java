@@ -60,7 +60,7 @@ public class KafkaConfig {
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         config.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-        config.put(JsonDeserializer.TYPE_MAPPINGS, "hotelDtoRq:ru.otus.java.pro.result.project.messageprocessor.dtos.HotelDtoRq");
+        config.put(JsonDeserializer.TYPE_MAPPINGS, "hotelDtoRq:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelDtoRq");
         if (kafkaPropertyConfig.isAsyncModeEnabled()) {
             log.info("Kafka running in aggregate replies mode (async): one request per topic");
         } else {
@@ -74,8 +74,8 @@ public class KafkaConfig {
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertyConfig.getBrokers());
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        config.put(JsonSerializer.TYPE_MAPPINGS, "providerResponseDto:ru.otus.java.pro.result.project.messageprocessor.dtos.ProviderResponseDto, " +
-                "hotelDto:ru.otus.java.pro.result.project.messageprocessor.dtos.HotelDto");
+        config.put(JsonSerializer.TYPE_MAPPINGS, "providerResponseDto:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.ProviderResponseDto, " +
+                "hotelDto:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelDto");
         return config;
     }
 

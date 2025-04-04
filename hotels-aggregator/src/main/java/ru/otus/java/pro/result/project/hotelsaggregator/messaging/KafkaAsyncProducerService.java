@@ -12,7 +12,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.stereotype.Service;
 import ru.otus.java.pro.result.project.hotelsaggregator.configs.KafkaConfig;
 import ru.otus.java.pro.result.project.hotelsaggregator.configs.properties.KafkaPropertyConfig;
-import ru.otus.java.pro.result.project.hotelsaggregator.dtos.internals.ProviderResponseDto;
+import ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.ProviderResponseDto;
 import ru.otus.java.pro.result.project.hotelsaggregator.entities.Provider;
 import ru.otus.java.pro.result.project.hotelsaggregator.enums.BusinessMethodEnum;
 import ru.otus.java.pro.result.project.hotelsaggregator.exceptions.ApplicationException;

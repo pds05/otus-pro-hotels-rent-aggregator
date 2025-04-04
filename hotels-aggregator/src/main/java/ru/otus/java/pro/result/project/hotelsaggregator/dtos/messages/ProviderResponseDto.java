@@ -1,4 +1,4 @@
-package ru.otus.java.pro.result.project.messageprocessor.dtos;
+package ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProviderResponseDto {
+public class ProviderResponseDto<T> {
+
     private String providerName;
-    private Object data;
+
+    private T data;
 }

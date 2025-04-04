@@ -1,4 +1,4 @@
-package ru.otus.java.pro.result.project.hotelsaggregator.dtos.internals;
+package ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

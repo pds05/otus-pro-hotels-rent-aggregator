@@ -1,6 +1,7 @@
-package ru.otus.java.pro.result.project.hotelsaggregator.dtos.internals;
+package ru.otus.java.pro.result.project.hotelsaggregator.dtos;
 
 import lombok.*;
+import ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.ProviderHotelDto;
 
 import java.util.ArrayList;
 import java.util.List;
