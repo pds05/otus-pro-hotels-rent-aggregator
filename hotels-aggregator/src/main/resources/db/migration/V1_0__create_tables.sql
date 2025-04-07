@@ -34,12 +34,12 @@ create table if not exists provider_apis
     CONSTRAINT unique_path_rest_method_provider_id UNIQUE (path, rest_method, provider_id)
 );
 
-create sequence if not exists user_profile_pk_seq
+create sequence if not exists user_profiles_pk_seq
     increment 1 minvalue 1 maxvalue 9999999999 start 1 cache 1;
 
-create table if not exists user_profile
+create table if not exists user_profiles
 (
-    id            varchar(8) default to_char(nextval('user_profile_pk_seq'), 'FM0000000000') primary key,
+    id            varchar(10) default to_char(nextval('user_profiles_pk_seq'), 'FM0000000000') primary key,
     login         varchar(50)  not null,
     password      varchar(255) not null,
     first_name    varchar(50)  not null,
@@ -54,25 +54,46 @@ create table if not exists user_profile
     CONSTRAINT check_email CHECK ( email ~* '^[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
-create table if not exists user_orders
+create table if not exists provider_user_profiles
 (
-    order_id          bigint      not null,
-    user_profile_id   varchar(10) not null,
-    provider_id       int         not null,
-    provider_order_id varchar(50),
-    hotel             varchar(255),
-    location          varchar(255),
-    room_name         varchar(50),
-    rate_name         varchar(50),
-    date_in           date,
-    date_out          date,
-    status            varchar(10),
-    order_price       numeric(10, 2) check ( order_price >= 0 ),
-    is_refund         boolean,
-    description       varchar(255),
+    id                bigserial primary key,
+    first_name        varchar(50)  not null,
+    last_name         varchar(50)  not null,
+    middle_name       varchar(50),
+    user_profile_id   varchar(10)   not null,
+    provider_id       int          not null,
+    providers_user_id varchar(25),
+    login             varchar(50)  not null,
+    password          varchar(255) not null,
+    password_salt     varchar(10)  not null,
+    phone_number      varchar(11) UNIQUE,
+    email             varchar(255) UNIQUE,
     created_at        timestamp default now(),
     updated_at        timestamp default now(),
+    CONSTRAINT unique_user_profile_id_provider_id UNIQUE (user_profile_id, provider_id),
+    CONSTRAINT fk_provider_id_provider_user_profiles FOREIGN KEY (provider_id) references providers (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT fk_user_profile_id_provider_user_profiles FOREIGN KEY (user_profile_id) references user_profiles (id) ON DELETE CASCADE ON UPDATE RESTRICT
+);
+
+create table if not exists user_orders
+(
+    order_id                 bigint      not null,
+    user_profile_id          varchar(10) not null,
+    provider_user_profile_id bigint      not null,
+    provider_order           varchar(50),
+    hotel                    varchar(255),
+    location                 varchar(255),
+    room_name                varchar(50),
+    rate_name                varchar(50),
+    date_in                  date,
+    date_out                 date,
+    status                   varchar(10),
+    order_price              numeric(10, 2) check ( order_price >= 0 ),
+    is_refund                boolean,
+    description              varchar(255),
+    created_at               timestamp default now(),
+    updated_at               timestamp default now(),
     CONSTRAINT pk_order_id_user_profile_id PRIMARY KEY (order_id, user_profile_id),
-    CONSTRAINT fk_provider_id_providers FOREIGN KEY (provider_id) references providers (id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_user_profile_user_order FOREIGN KEY (user_profile_id) references user_profile (id) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT fk_provider_user_profile_user_orders FOREIGN KEY (provider_user_profile_id) references provider_user_profiles (id) ON DELETE CASCADE ON UPDATE RESTRICT,
+    CONSTRAINT fk_user_profile_user_orders FOREIGN KEY (user_profile_id) references user_profiles (id) ON DELETE CASCADE ON UPDATE RESTRICT
 );

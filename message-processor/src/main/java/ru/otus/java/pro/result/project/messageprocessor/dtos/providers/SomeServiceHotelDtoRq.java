@@ -1,6 +1,5 @@
-package ru.otus.java.pro.result.project.messageprocessor.dtos.messages;
+package ru.otus.java.pro.result.project.messageprocessor.dtos.providers;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,23 +11,19 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class HotelDtoRq extends InternalDto {
+public class SomeServiceHotelDtoRq extends AbstractProviderDto{
+
     private String city;
     private String hotel;
     private Integer stars;
     private Integer priceFrom;
     private Integer priceTo;
-    @JsonIgnore
-    List<String> hotelTypes;
-    @JsonIgnore
-    List<String> hotelAmenities;
-    @JsonIgnore
-    List<String> hotelRoomAmenities;
-    @JsonIgnore
-    List<String> beds;
-    @JsonIgnore
-    List<String> foods;
     private Integer guests;
     private Integer children;
+    List<String> hotelTypes;
+    List<String> hotelAmenities;
+    List<String> hotelRoomAmenities;
+    List<String> beds;
+    List<String> foods;
 
 }

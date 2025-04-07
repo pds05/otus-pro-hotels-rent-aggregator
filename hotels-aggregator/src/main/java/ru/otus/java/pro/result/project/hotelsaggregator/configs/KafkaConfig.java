@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Getter
 @Slf4j
@@ -70,8 +69,10 @@ public class KafkaConfig {
         config.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        config.put(JsonDeserializer.TYPE_MAPPINGS, "providerResponseDto:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.ProviderResponseDto, " +
-                "hotelDto:ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDto");
+        config.put(JsonDeserializer.TYPE_MAPPINGS, "hotelDtoMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.HotelDtoMsg, " +
+                "hotelsDtoMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.HotelsDtoMsg, " +
+                "userDtoMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.UserDtoMsg, " +
+                "userOrderDtoMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.UserOrderDtoMsg");
         if (kafkaPropertyConfig.isAsyncModeEnabled()) {
             config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         }
@@ -88,7 +89,9 @@ public class KafkaConfig {
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertyConfig.getBrokers());
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        config.put(JsonSerializer.TYPE_MAPPINGS, "hotelDtoRq:ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDtoRq");
+        config.put(JsonSerializer.TYPE_MAPPINGS, "hotelDtoRqMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.HotelDtoRqMsg, " +
+                "userDtoRqMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.UserDtoRqMsg, " +
+                "userOrderCreateDtoRqMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.UserOrderCreateDtoRqMsg");
         return config;
     }
 

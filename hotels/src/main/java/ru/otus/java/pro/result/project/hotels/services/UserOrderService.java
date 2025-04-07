@@ -4,16 +4,15 @@ import ru.otus.java.pro.result.project.hotels.dtos.UserOrderCreateDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.UserOrder;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserOrderService {
 
-    UserOrder findUserOrder(String order);
+    UserOrder getUserOrder(String order);
 
-    List<UserOrder> findUserOrders(String userId);
+    List<UserOrder> getUserOrders(String userId);
 
     UserOrder createUserOrder(UserOrderCreateDtoRq orderDtoRq);
 
-    UserOrder canceledUserOrder(String order);
+    UserOrder cancelUserOrder(String order);
 
 }

@@ -39,4 +39,5 @@ public class UserDtoRq {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = PASSWORD_FIELD + " must consist of at least eight characters, at least one uppercase letter, one lowercase letter and one digit")
     @NotBlank(message = PASSWORD_FIELD + " is required")
     private String password;
+
 }

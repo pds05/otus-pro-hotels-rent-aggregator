@@ -8,7 +8,7 @@ import ru.otus.java.pro.result.project.hotels.dtos.UserOrderCreateDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.*;
 import ru.otus.java.pro.result.project.hotels.exceptions.BusinessLogicException;
 import ru.otus.java.pro.result.project.hotels.exceptions.ResourceNotFoundException;
-import ru.otus.java.pro.result.project.hotels.lib.UserOrderStatus;
+import ru.otus.java.pro.result.project.hotels.enums.UserOrderStatus;
 import ru.otus.java.pro.result.project.hotels.repositories.UserOrdersRepository;
 
 import java.math.BigDecimal;
@@ -26,11 +26,11 @@ public class UserOrderServiceImpl implements UserOrderService {
     private final UserProfileService userProfileService;
 
     @Override
-    public UserOrder findUserOrder(String order) {
+    public UserOrder getUserOrder(String order) {
         try {
             String userProfileId = order.split("-")[0];
             int userOrderId = Integer.parseInt(order.split("-")[1]);
-            UserProfile user = userProfileService.findUserProfile(userProfileId);
+            UserProfile user = userProfileService.getUserProfile(userProfileId);
             return userOrderRepository.findUserOrder(userOrderId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("Order not exist"));
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             throw new ResourceNotFoundException("Order is invalid");
@@ -38,8 +38,8 @@ public class UserOrderServiceImpl implements UserOrderService {
     }
 
     @Override
-    public List<UserOrder> findUserOrders(String userId) {
-        UserProfile user = userProfileService.findUserProfile(userId);
+    public List<UserOrder> getUserOrders(String userId) {
+        UserProfile user = userProfileService.getUserProfile(userId);
         return userOrderRepository.findUserOrderByUserProfile_Id(user.getId());
     }
 
@@ -48,10 +48,10 @@ public class UserOrderServiceImpl implements UserOrderService {
     public UserOrder createUserOrder(UserOrderCreateDtoRq orderDtoRq) {
         log.info("Creating new order, {}", orderDtoRq);
 
-        UserProfile user = userProfileService.findUserProfile(orderDtoRq.getUserId());
-        Hotel hotel = hotelsService.findHotel(orderDtoRq.getHotelId());
+        UserProfile user = userProfileService.getUserProfile(orderDtoRq.getUserId());
+        Hotel hotel = hotelsService.getHotel(orderDtoRq.getHotelId());
         //TODO доработать пересчет свободных номеров после бронирования по датам
-        HotelRoom hotelRoom = hotelsService.findHotelRoom(orderDtoRq.getRoomId(), hotel.getId());
+        HotelRoom hotelRoom = hotelsService.getHotelRoom(orderDtoRq.getRoomId(), hotel.getId());
         if (hotelRoom.getMaxGuests() < (orderDtoRq.getGuests() + Optional.ofNullable(orderDtoRq.getChildren()).orElse(0))) {
             throw new BusinessLogicException("GUESTS_EXCESS", "too many guests, room not suitable");
         }
@@ -73,12 +73,12 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Transactional
     @Override
-    public UserOrder canceledUserOrder(String order) {
+    public UserOrder cancelUserOrder(String order) {
         log.info("Order canceling, {}", order);
         try {
             String userProfileId = order.split("-")[0];
             int userOrderId = Integer.parseInt(order.split("-")[1]);
-            UserProfile user = userProfileService.findUserProfile(userProfileId);
+            UserProfile user = userProfileService.getUserProfile(userProfileId);
             UserOrder userOrder = userOrderRepository.findUserOrder(userOrderId, user.getId()).orElseThrow(() -> new ResourceNotFoundException("Order not exist"));
             if (userOrder.getIsRefund()) {
                 userOrder.setStatus(UserOrderStatus.CANCELED);

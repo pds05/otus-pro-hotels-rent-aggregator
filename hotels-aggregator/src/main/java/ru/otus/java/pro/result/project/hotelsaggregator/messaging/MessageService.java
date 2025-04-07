@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface MessageService {
 
-    <T> List<ProviderResponseDto<T>> sendMessage(Object message, BusinessMethodEnum method, Class<?> clazz);
+    <T> List<ProviderResponseDto<T>> sendMessage(Object message, BusinessMethodEnum businessMethod);
 
-    <T> ProviderResponseDto<T> sendMessage(Provider provider, Object message, BusinessMethodEnum method, Class<?> clazz);
+    <T> ProviderResponseDto<T> sendMessage(Provider provider, Object message, BusinessMethodEnum businessMethod);
+
 }

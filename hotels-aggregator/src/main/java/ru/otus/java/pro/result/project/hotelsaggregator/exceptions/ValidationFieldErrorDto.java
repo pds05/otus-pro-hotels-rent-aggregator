@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ValidationFieldErrorDto {
+
     private String field;
     private String message;
 }

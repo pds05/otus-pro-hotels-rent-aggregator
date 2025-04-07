@@ -36,7 +36,7 @@ public class UserDtoRq {
     @Pattern(regexp = "7\\d{10}", message = PHONE_NUMBER_FIELD + " must consist of 10 digits and start with 7")
     private String phoneNumber;
     @Schema(description = "Пароль доступа. Присваивается username, если отсутствует email", format = "password", requiredMode = Schema.RequiredMode.REQUIRED, minLength = 8, maxLength = 255, example = "Pass1234")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$", message = PASSWORD_FIELD + " must consist of at least eight characters, at least one uppercase letter, one lowercase letter and one digit")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!?@#$%&]).{8,}$", message = PASSWORD_FIELD + " must consist of at least eight characters, at least one uppercase letter, one lowercase letter and one digit")
     @NotBlank(message = PASSWORD_FIELD + " is required")
     private String password;
 }

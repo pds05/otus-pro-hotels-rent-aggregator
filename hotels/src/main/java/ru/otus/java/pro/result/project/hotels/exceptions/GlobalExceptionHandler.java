@@ -3,13 +3,16 @@ package ru.otus.java.pro.result.project.hotels.exceptions;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.method.MethodValidationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -104,5 +107,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> catchResourceNotFoundException(BusinessLogicException e) {
         log.error("Business logic error: {}", e.getMessage());
         return new ResponseEntity<>(new ErrorDto(e.getCode(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<Object> handleAccessDeniedException(
+            AccessDeniedException ex, WebRequest request) {
+        String bodyOfResponse = "Access denied: " + ex.getMessage();
+        log.warn("Access denied: {}", request.getDescription(false));
+        return new ResponseEntity<>(new ErrorDto("AUTHORIZATION_ERROR",
+                bodyOfResponse), HttpStatus.FORBIDDEN);
     }
 }

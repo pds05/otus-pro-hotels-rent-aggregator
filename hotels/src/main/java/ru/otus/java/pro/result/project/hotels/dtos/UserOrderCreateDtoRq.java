@@ -36,6 +36,7 @@ public class UserOrderCreateDtoRq {
     @Positive (message = RATE_ID_FIELD + " must be positive")
     private Integer rateId;
     @Schema(description = "Идентификатор клиента", type = "integer", requiredMode = Schema.RequiredMode.REQUIRED, example = "00000001")
+    @NotNull
     @Pattern(regexp = "\\d{8}", message = USER_ID_FIELD + " invalid, must consist of 8 digits")
     private String userId;
     @Schema(description = "Дата заезда", requiredMode = Schema.RequiredMode.REQUIRED, format = "date", type = "string", example = "2025-10-25")

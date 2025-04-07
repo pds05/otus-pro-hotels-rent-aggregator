@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class HotelDto {
     @Schema(description = "Идентификатор отеля")
     private Integer id;

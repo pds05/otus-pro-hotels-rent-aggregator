@@ -24,11 +24,11 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_profile")
+@Table(name = "user_profiles")
 public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, length = 8)
+    @Column(name = "id", nullable = false, length = 10)
     private String id;
 
     @NotEmpty

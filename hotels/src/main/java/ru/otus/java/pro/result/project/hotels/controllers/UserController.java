@@ -10,11 +10,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.java.pro.result.project.hotels.dtos.*;
+import ru.otus.java.pro.result.project.hotels.entities.UserOrder;
+import ru.otus.java.pro.result.project.hotels.entities.UserProfile;
 import ru.otus.java.pro.result.project.hotels.exceptions.ErrorDto;
 import ru.otus.java.pro.result.project.hotels.services.UserOrderService;
 import ru.otus.java.pro.result.project.hotels.services.UserProfileService;
@@ -28,8 +31,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
+    public static final String USER_ID_PATTERN = "\\d{8}";
+
     private final UserProfileService userProfileService;
     private final UserOrderService userOrderService;
+    private final ModelMapper modelMapper;
 
     @Operation(summary = "Получить все бронирования пользователя", responses = {
             @ApiResponse(description = "Успешный ответ", responseCode = "200",
@@ -41,9 +47,10 @@ public class UserController {
     @GetMapping("/order")
     public List<UserOrderDto> getUserOrders(
             @Parameter(description = "Идентификатор пользователя", required = true, example = "00000001")
-            @Pattern(regexp = "\\d{8}", message = "user-id invalid, must consist of 8 digits")
+            @Pattern(regexp = USER_ID_PATTERN, message = "user-id invalid, must consist of 8 digits")
             @RequestParam("user-id") String userId) {
-        return userOrderService.findUserOrders(userId).stream().map(UserOrderDto::mapping).toList();
+        List<UserOrder> userOrders = userOrderService.getUserOrders(userId);
+        return userOrders.stream().map(order -> modelMapper.map(order, UserOrderDto.class)).toList();
     }
 
     @Operation(summary = "Получить данные по бронированию", responses = {
@@ -58,8 +65,9 @@ public class UserController {
     public UserOrderDto getUserOrder(
             @Parameter(description = "Номер бронирования", required = true, example = "00000001-1")
             @OrderValid
-            @PathVariable(name = "id") String order) {
-        return UserOrderDto.mapping(userOrderService.findUserOrder(order));
+            @PathVariable(name = "id") String orderId) {
+        UserOrder order = userOrderService.getUserOrder(orderId);
+        return modelMapper.map(order, UserOrderDto.class);
     }
 
     @Operation(summary = "Метод отмены бронирования", responses = {
@@ -76,8 +84,9 @@ public class UserController {
     @GetMapping("/order/cancel")
     public UserOrderDto cancelUserOrder(
             @Parameter(description = "Номер бронирования", required = true, example = "00000001-1")
-            @OrderValid @RequestParam String order) {
-        return UserOrderDto.mapping(userOrderService.canceledUserOrder(order));
+            @OrderValid @RequestParam(name = "order") String orderId) {
+        UserOrder order = userOrderService.cancelUserOrder(orderId);
+        return modelMapper.map(order, UserOrderDto.class);
     }
 
     @Operation(summary = "Метод регистрации нового пользователя", responses = {
@@ -93,7 +102,8 @@ public class UserController {
     public UserDto createUserProfile(
             @Parameter(description = "Параметры пользователя", required = true)
             @Valid @RequestBody UserDtoRq userDtoRq) {
-        return UserDto.mapping(userProfileService.createUserProfile(userDtoRq));
+        UserProfile user = userProfileService.createUserProfile(userDtoRq);
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Operation(summary = "Запрос профиля пользователя по идентификатору", responses = {
@@ -102,12 +112,13 @@ public class UserController {
             @ApiResponse(description = "Пользователь отключен", responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public UserDto getUserProfile(
             @Parameter(description = "Идентификатор пользователя", required = true)
-            @Pattern(regexp = "\\d{8}")
+            @Pattern(regexp = USER_ID_PATTERN)
             @PathVariable(name = "id") String userId) {
-        return UserDto.mapping(userProfileService.findUserProfile(userId));
+        UserProfile user = userProfileService.getUserProfile(userId);
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Operation(summary = "Отключение профиля пользователя", responses = {
@@ -118,7 +129,7 @@ public class UserController {
     @GetMapping("/delete/{id}")
     public void deleteUserProfile(
             @Parameter(description = "Идентификатор пользователя", required = true)
-            @Pattern(regexp = "\\d{8}")
+            @Pattern(regexp = USER_ID_PATTERN)
             @PathVariable(name = "id") String userId) {
         userProfileService.deleteUserProfile(userId);
     }
@@ -131,9 +142,10 @@ public class UserController {
     @GetMapping("/activate/{id}")
     public UserDto activateUserProfile(
             @Parameter(description = "Идентификатор пользователя", required = true)
-            @Pattern(regexp = "\\d{8}")
+            @Pattern(regexp = USER_ID_PATTERN)
             @PathVariable(name = "id") String userId) {
-        return UserDto.mapping(userProfileService.activateUserProfile(userId));
+        UserProfile user = userProfileService.activateUserProfile(userId);
+        return modelMapper.map(user, UserDto.class);
     }
 
 }

@@ -15,7 +15,7 @@ import ru.otus.java.pro.result.project.hotels.validators.RequestParametersValid;
 
 import java.util.List;
 
-@Schema(name = "HotelDtoRqGet", description = "Фильтры запроса поиска жилья")
+@Schema(name = "Фильтры отелей", description = "Набор параметров жилья, по которым производится поиск")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

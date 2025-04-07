@@ -22,7 +22,11 @@ public class UserOrderCreateDtoRq {
     public static final String DATE_IN_FIELD = "dateIn";
     public static final String DATE_OUT_FIELD = "dateOut";
     public static final String USER_ID_FIELD = "userId";
+    public static final String SERVICE_ID_FIELD = "serviceId";
 
+    @NotNull(message = SERVICE_ID_FIELD + " is required")
+    @Positive(message = SERVICE_ID_FIELD + " must be positive")
+    private Integer serviceId;
     @Schema(description = "Идентификатор отеля", type = "integer", requiredMode = Schema.RequiredMode.REQUIRED, example = "10")
     @NotNull (message = HOTEL_ID_FIELD + " is required")
     @Positive (message = HOTEL_ID_FIELD + " must be positive")
@@ -36,17 +40,18 @@ public class UserOrderCreateDtoRq {
     @Positive (message = RATE_ID_FIELD + " must be positive")
     private Integer rateId;
     @Schema(description = "Идентификатор клиента", type = "integer", requiredMode = Schema.RequiredMode.REQUIRED, example = "00000001")
-    @Pattern(regexp = "\\d{8}", message = USER_ID_FIELD + " invalid, must consist of 8 digits")
+    @NotNull
+    @Pattern(regexp = "\\d{10}", message = USER_ID_FIELD + " invalid, must consist of 8 digits")
     private String userId;
     @Schema(description = "Дата заезда", requiredMode = Schema.RequiredMode.REQUIRED, format = "date", type = "string", example = "2025-10-25")
     @NotNull
     @FutureOrPresent(message = DATE_IN_FIELD + " check-in date must be greater or equal to the current date")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateIn;
     @Schema(description = "Дата выезда", requiredMode = Schema.RequiredMode.REQUIRED, format = "date", type = "string", example = "2025-10-26")
     @NotNull
     @Future(message = DATE_OUT_FIELD + " departure date must be greater to the current date")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOut;
     @Schema(description = "Количество проживающих гостей", type = "integer", requiredMode = Schema.RequiredMode.REQUIRED, example = "2")
     @Positive

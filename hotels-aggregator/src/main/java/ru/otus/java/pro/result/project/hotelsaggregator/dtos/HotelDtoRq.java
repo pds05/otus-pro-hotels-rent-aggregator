@@ -13,7 +13,7 @@ import ru.otus.java.pro.result.project.hotelsaggregator.validators.PriceRangeVal
 
 import java.util.List;
 
-@Schema(name = "HotelDtoRqGet", description = "Фильтры запроса поиска жилья")
+@Schema(name = "Фильтры отелей", description = "Набор параметров жилья, по которым производится поиск")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,19 +34,14 @@ public class HotelDtoRq {
     @Positive
     private Integer priceTo;
     @ArraySchema(schema = @Schema(description = "Тип жилья", type = "string", requiredMode = Schema.RequiredMode.NOT_REQUIRED, maxLength = 50, example = "hotel"))
-//    @RequestParametersValid(source = CtHotelType.class)
     List<String> hotelTypes;
     @ArraySchema(schema = @Schema(description = "Удобства отеля", type = "string", requiredMode = Schema.RequiredMode.NOT_REQUIRED, maxLength = 50, example = "Трансфер"))
-//    @RequestParametersValid(source = HotelAmenity.class)
     List<String> hotelAmenities;
     @ArraySchema(schema = @Schema(description = "Удобства номера", type = "string", requiredMode = Schema.RequiredMode.NOT_REQUIRED, maxLength = 50, example = "Кондиционер"))
-//    @RequestParametersValid(source = HotelRoomAmenity.class)
     List<String> hotelRoomAmenities;
     @ArraySchema(schema = @Schema(description = "Тип кровати в номере", type = "string", requiredMode = Schema.RequiredMode.NOT_REQUIRED, maxLength = 50, example = "queen"))
-//    @RequestParametersValid(source = CtHotelBedType.class)
     List<String> beds;
     @ArraySchema(schema = @Schema(description = "Тип питания", type = "string", requiredMode = Schema.RequiredMode.NOT_REQUIRED, maxLength = 50, example = "breakfast"))
-//    @RequestParametersValid(source = CtHotelFeedType.class)
     List<String> foods;
     @Schema(description = "Количество гостей", type = "integer", requiredMode = Schema.RequiredMode.NOT_REQUIRED, minimum = "1", example = "2")
     @Positive

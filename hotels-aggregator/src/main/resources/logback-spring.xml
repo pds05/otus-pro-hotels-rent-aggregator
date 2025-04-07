@@ -37,7 +37,7 @@
         <appender-ref ref="ConsoleOutput" />
     </root>
 
-    <logger name="ru.otus" level="debug" additivity="false">
+    <logger name="ru.otus" level="trace" additivity="false">
         <appender-ref ref="LogFile" />
         <appender-ref ref="ConsoleOutput" />
     </logger>

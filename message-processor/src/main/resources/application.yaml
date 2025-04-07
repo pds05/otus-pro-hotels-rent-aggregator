@@ -22,12 +22,12 @@ spring:
     consumer-group: messageProcessorsGroup
     backoff-interval: 5S
     backoff-max-failure: 2
-    listener-threads: 3
+    topic-listener-threads: 3
     request-topic-suffix: request
     reply-topic-suffix: reply
 #Включение режима 'async-mode' должно быть согласовано у производителя и всех потребителей
     async-mode:
-      enable: true
+      enable: false
       topic-prefix: aggregate
 #Интеграция работает только с включенными сервисами в базе и локальных настройках
 #Если локальные настройки интеграции не заданы, то по-умолчанию применяются активные сервисы из базы

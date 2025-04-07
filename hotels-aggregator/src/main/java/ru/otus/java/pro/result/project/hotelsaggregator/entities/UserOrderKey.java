@@ -5,19 +5,17 @@ import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class UserOrderKey implements java.io.Serializable {
     private static final long serialVersionUID = 385005079588784478L;
     @NotNull
     @Column(name = "order_id", nullable = false)
-    private Long orderId;
+    private Integer orderId;
 
     @Size(min= 10, max = 10)
     @NotEmpty
@@ -26,5 +24,10 @@ public class UserOrderKey implements java.io.Serializable {
 
     public String print() {
         return String.format("%s-%s", userProfileId, orderId);
+    }
+
+    @Override
+    public String toString() {
+        return print();
     }
 }

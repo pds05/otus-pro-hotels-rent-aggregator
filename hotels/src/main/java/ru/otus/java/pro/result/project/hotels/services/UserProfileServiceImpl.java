@@ -4,6 +4,7 @@ import io.micrometer.common.util.StringUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.otus.java.pro.result.project.hotels.dtos.UserDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.UserProfile;
@@ -16,6 +17,7 @@ import ru.otus.java.pro.result.project.hotels.repositories.UserProfilesRepositor
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfilesRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -28,7 +30,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .firstName(userDtoRq.getFirstName())
                 .lastName(userDtoRq.getLastName())
                 .middleName(userDtoRq.getMiddleName())
-                .password(userDtoRq.getPassword())
+                .password(passwordEncoder.encode(userDtoRq.getPassword()))
                 .email(userDtoRq.getEmail())
                 .phoneNumber(userDtoRq.getPhoneNumber())
                 .isActive(true)
@@ -40,7 +42,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile findUserProfile(String id) {
+    public UserProfile getUserProfile(String id) {
         UserProfile userProfile = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
         if (!userProfile.getIsActive()) {
             throw new BusinessLogicException("USER_BLOCKED", "User profile is blocked");

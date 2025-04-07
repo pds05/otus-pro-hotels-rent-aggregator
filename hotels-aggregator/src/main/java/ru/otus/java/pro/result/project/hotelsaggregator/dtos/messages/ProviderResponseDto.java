@@ -12,4 +12,5 @@ public class ProviderResponseDto<T> {
     private String providerName;
 
     private T data;
+
 }

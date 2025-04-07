@@ -18,22 +18,20 @@ import java.time.LocalDateTime;
 @Table(name = "user_orders")
 public class UserOrder {
     @EmbeddedId
-    private UserOrderKey primaryKey;
+    private UserOrderKey userOrderId;
 
     @NotNull
     @MapsId("userProfileId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_profile_id", nullable = false)
     private UserProfile userProfile;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "provider_id", nullable = false)
-    private Provider provider;
+    @JoinColumn(name = "provider_user_profile_id", nullable = false)
+    private ProviderUserProfile providerUserProfile;
 
-    @Column(name = "provider_order_id", length = 50)
+    @Column(name = "provider_order", length = 50)
     private String providerOrderId;
 
     @Column(name = "hotel")

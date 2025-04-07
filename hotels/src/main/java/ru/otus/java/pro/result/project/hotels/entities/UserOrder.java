@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import org.hibernate.annotations.*;
-import ru.otus.java.pro.result.project.hotels.lib.UserOrderStatus;
+import ru.otus.java.pro.result.project.hotels.enums.UserOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

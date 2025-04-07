@@ -25,38 +25,38 @@ public class HotelsServiceImpl implements HotelsService {
     private final HotelDao hotelDao;
 
     @Override
-    public List<Hotel> findHotels(String city) {
+    public List<Hotel> getHotels(String city) {
         return hotelsRepository.findAllByCity_Title(city);
     }
 
     @Override
-    public List<Hotel> findFilterHotels(HotelDtoRq hotelDtoRq) {
+    public List<Hotel> getFilterHotels(HotelDtoRq hotelDtoRq) {
         List<Hotel> hotels = hotelDao.getFilterHotels(hotelDtoRq);
         return postQueryFilter(hotels, hotelDtoRq);
     }
 
     @Override
-    public Hotel findHotel(int hotelId) {
+    public Hotel getHotel(int hotelId) {
         return hotelsRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("Hotel not exist"));
     }
 
     @Override
-    public List<HotelRoom> findHotelRooms(int hotelId) {
+    public List<HotelRoom> getHotelRooms(int hotelId) {
         return hotelRoomsRepository.findByHotel_Id(hotelId);
     }
 
     @Override
-    public HotelRoom findHotelRoom(int hotelRoomId, int hotelId) {
+    public HotelRoom getHotelRoom(int hotelRoomId, int hotelId) {
         return hotelRoomsRepository.findByIdAndHotel_Id(hotelRoomId, hotelId).orElseThrow(() -> new ResourceNotFoundException("Room not exist"));
     }
 
     @Override
-    public List<HotelRoom> findHotelRoomsWithOrders(int hotelId) {
+    public List<HotelRoom> getHotelRoomsWithOrders(int hotelId) {
         return hotelRoomsRepository.findWithUserOrdersByHotel_Id(hotelId);
     }
 
     @Override
-    public HotelRoom findHotelRoomWithOrders(int hotelRoomId, int hotelId) {
+    public HotelRoom getHotelRoomWithOrders(int hotelRoomId, int hotelId) {
         return hotelRoomsRepository.findWithUserOrdersByIdAndHotel_Id(hotelRoomId, hotelId).orElseThrow(() -> new ResourceNotFoundException("Room not exist"));
     }
 

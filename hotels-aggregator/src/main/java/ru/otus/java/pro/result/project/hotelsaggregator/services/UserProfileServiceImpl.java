@@ -3,18 +3,24 @@ package ru.otus.java.pro.result.project.hotelsaggregator.services;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.java.pro.result.project.hotelsaggregator.exceptions.BusinessLogicException;
 import ru.otus.java.pro.result.project.hotelsaggregator.dtos.UserDtoRq;
 import ru.otus.java.pro.result.project.hotelsaggregator.entities.UserProfile;
 import ru.otus.java.pro.result.project.hotelsaggregator.repositories.UserProfileRepository;
+import ru.otus.java.pro.result.project.hotelsaggregator.exceptions.ResourceNotFoundException;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserProfileServiceImpl implements UserProfileService {
-    private final UserProfileRepository repository;
 
+    private final UserProfileRepository repository;
+    private final PasswordEncoder passwordEncoder;
+
+//    @Transactional
     @Override
     public UserProfile createUserProfile(UserDtoRq userDtoRq) {
         log.info("Creating new user profile, {}", userDtoRq);
@@ -25,7 +31,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .firstName(userDtoRq.getFirstName())
                 .lastName(userDtoRq.getLastName())
                 .middleName(userDtoRq.getMiddleName())
-                .password(userDtoRq.getPassword())
+                .password(passwordEncoder.encode(userDtoRq.getPassword()))
                 .email(userDtoRq.getEmail())
                 .phoneNumber(userDtoRq.getPhoneNumber())
                 .isActive(true)
@@ -38,7 +44,11 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfile findUserProfile(String id) {
-        return null;
+        UserProfile userProfile = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
+        if (!userProfile.getIsActive()) {
+            throw new BusinessLogicException("USER_BLOCKED", "User profile is blocked");
+        }
+        return userProfile;
     }
 
     @Override
@@ -48,11 +58,22 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Override
     public UserProfile activateUserProfile(String id) {
-        return null;
+        log.info("Activating user profile, {}", id);
+        UserProfile userProfile = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
+        if (!userProfile.getIsActive()) {
+            userProfile.setIsActive(true);
+            repository.save(userProfile);
+        }
+        log.info("User profile is activated, {}", userProfile);
+        return userProfile;
     }
 
     @Override
     public void deleteUserProfile(String id) {
-
+        log.info("Deleting user profile, {}", id);
+        UserProfile userProfile = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
+        userProfile.setIsActive(false);
+        repository.save(userProfile);
+        log.info("User profile is blocked, {}", userProfile);
     }
 }

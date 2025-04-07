@@ -1,6 +1,5 @@
 package ru.otus.java.pro.result.project.messageprocessor.dtos.messages;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -12,9 +11,8 @@ import java.util.TreeMap;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class HotelDto extends InternalDto{
-    private String provider;
+public class HotelDtoMsg extends AbstractMessageDto {
+
     private Integer id;
     private String title;
     private String address;
@@ -27,7 +25,8 @@ public class HotelDto extends InternalDto{
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class HotelRoomDto{
+    public static class HotelRoomDto {
+
         private Integer id;
         private String title;
         private Short size;
@@ -42,13 +41,13 @@ public class HotelDto extends InternalDto{
     @NoArgsConstructor
     @AllArgsConstructor
     public static class HotelRoomRateDto {
+
         private Integer id;
         private String title;
         private String food;
         private Boolean refund;
         private BigDecimal price;
-    }
 
-    
+    }
 
 }

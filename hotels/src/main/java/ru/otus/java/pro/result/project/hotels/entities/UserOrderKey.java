@@ -29,4 +29,8 @@ public class UserOrderKey implements Serializable {
         return String.format("%s-%s", userProfileId, orderId);
     }
 
+    @Override
+    public String toString() {
+        return print();
+    }
 }

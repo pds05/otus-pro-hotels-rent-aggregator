@@ -35,13 +35,18 @@ spring:
       reply-topic-suffix: reply
 #Включение режима 'async-mode' должно быть согласовано у производителя и всех потребителей
     async-mode:
-     enable: true
+     enable: false
      partial-on-timeout: true
      common-reply-timeout: 25S
      reply-timeout: 10S
      topic-prefix: aggregate
 common:
-  email-domain: ha.ru
+#Клиент регистрируется в сервисе через прокси-аккаунт
+  provider-user-profile:
+    email-by-random: true # default value
+    email-by-phone-number: true # если номер не указан, то подставляется логин
+    email-domain: otus.pro
+    email-user-length: 10
 #Интеграция работает только с включенными сервисами в базе и локальных настройках
 #Если локальные настройки интеграции не заданы, то по-умолчанию применяются активные сервисы из базы
 #Локальные настройки имеют более высокий приоритет, чем в базе

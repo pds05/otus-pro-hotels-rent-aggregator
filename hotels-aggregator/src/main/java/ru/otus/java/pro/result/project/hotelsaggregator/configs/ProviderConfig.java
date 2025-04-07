@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import ru.otus.java.pro.result.project.hotelsaggregator.configs.properties.ProviderPropertyFileConfig;
 import ru.otus.java.pro.result.project.hotelsaggregator.entities.Provider;
 import ru.otus.java.pro.result.project.hotelsaggregator.exceptions.ApplicationException;
-import ru.otus.java.pro.result.project.hotelsaggregator.services.ProviderService;
+import ru.otus.java.pro.result.project.hotelsaggregator.services.ProviderServiceImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Configuration
 public class ProviderConfig {
 
-    private final ProviderService providerService;
+    private final ProviderServiceImpl providerService;
 
     private final ProviderPropertyFileConfig providerPropertyFileConfig;
 
@@ -25,7 +25,7 @@ public class ProviderConfig {
     public List<Provider> providers() {
         //работаем только с активными сервисами/провайдерами в базе и локальных настройках, и не включенные в список исключения
         //если в локальных настройках нет включенных сервисов, то работаем со всеми активными из базы
-        List<Provider> providers = providerService.getProviders().stream()
+        List<Provider> providers = providerService.getAllProviders().stream()
                 .filter(provider -> provider.getIsActive().equals(true))
                 .filter(provider -> providerPropertyFileConfig.getEnables().isEmpty() || providerPropertyFileConfig.getEnables().stream().anyMatch(enable -> provider.getPropertyName().equalsIgnoreCase(enable)))
                 .filter(provider -> providerPropertyFileConfig.getExclude().stream()

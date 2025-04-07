@@ -1,10 +1,11 @@
 package ru.otus.java.pro.result.project.messageprocessor.integrations;
 
+import ru.otus.java.pro.result.project.messageprocessor.dtos.providers.AbstractProviderDto;
 import ru.otus.java.pro.result.project.messageprocessor.entities.ProviderApi;
 
 public interface RestService {
 
-    <T> T getRequest(ProviderApi api, Object request);
+    <T> T get(ProviderApi api, AbstractProviderDto request);
 
-    <T> T postRequest(ProviderApi api, Class<T> dtoClass);
+    <T> T post(ProviderApi api, AbstractProviderDto request, Class<T> responseClass);
 }

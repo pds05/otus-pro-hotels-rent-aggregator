@@ -1,23 +1,19 @@
-package ru.otus.java.pro.result.project.messageprocessor.dtos.providers;
+package ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-@ToString
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProviderHotelDto {
-    private String provider;
+public class HotelDtoMsg {
+
     private Integer id;
     private String title;
     private String address;
@@ -31,6 +27,7 @@ public class ProviderHotelDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class HotelRoomDto{
+
         private Integer id;
         private String title;
         private Short size;
@@ -45,13 +42,12 @@ public class ProviderHotelDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class HotelRoomRateDto {
+
         private Integer id;
         private String title;
         private String food;
         private Boolean refund;
         private BigDecimal price;
     }
-
-
 
 }

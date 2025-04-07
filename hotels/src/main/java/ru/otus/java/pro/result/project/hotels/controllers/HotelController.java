@@ -8,10 +8,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +21,7 @@ import ru.otus.java.pro.result.project.hotels.dtos.HotelDtoRq;
 import ru.otus.java.pro.result.project.hotels.dtos.UserOrderDto;
 import ru.otus.java.pro.result.project.hotels.dtos.UserOrderCreateDtoRq;
 import ru.otus.java.pro.result.project.hotels.entities.Hotel;
+import ru.otus.java.pro.result.project.hotels.entities.UserOrder;
 import ru.otus.java.pro.result.project.hotels.exceptions.ErrorDto;
 import ru.otus.java.pro.result.project.hotels.exceptions.ValidationErrorDto;
 import ru.otus.java.pro.result.project.hotels.services.HotelsService;
@@ -36,6 +37,7 @@ import java.util.*;
 public class HotelController {
     private final HotelsService hotelsService;
     private final UserOrderService userOrderService;
+    private final ModelMapper modelMapper;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -46,7 +48,7 @@ public class HotelController {
     public List<HotelDto> getAllHotels(
             @Parameter(description = "Наименование населенного пункта", required = true, schema = @Schema(type = "string", maxLength = 50, example = "Москва"))
             @NotBlank @RequestParam("city") String city) {
-        return hotelsService.findHotels(city).stream().map(HotelDto::mapping).toList();
+        return hotelsService.getHotels(city).stream().map(HotelDto::mapping).toList();
     }
 
     @Operation(summary = "Метод поиска жилья с применением фильтров", responses = {
@@ -62,7 +64,7 @@ public class HotelController {
     public List<HotelDto> getFilterHotels(
             @Parameter(description = "Набор фильтров с параметрами жилья, по которым ведется поиск", required = true)
             @Valid @ModelAttribute HotelDtoRq hotelDtoRq) {
-        List<Hotel> hotels = hotelsService.findFilterHotels(hotelDtoRq);
+        List<Hotel> hotels = hotelsService.getFilterHotels(hotelDtoRq);
         return hotels.stream().map(HotelDto::mapping).toList();
     }
 
@@ -75,7 +77,7 @@ public class HotelController {
     public HotelDto getHotelById(
             @Parameter(description = "Идентификатор отеля", required = true)
             @Positive @PathVariable("id") int hotelId) {
-        return HotelDto.mapping(hotelsService.findHotel(hotelId));
+        return HotelDto.mapping(hotelsService.getHotel(hotelId));
     }
 
     @Operation(summary = "Метод бронирования жилья", responses = {
@@ -91,6 +93,7 @@ public class HotelController {
     public UserOrderDto createOrder(
             @Parameter(description = "Параметры бронирования", required = true)
             @Valid @RequestBody UserOrderCreateDtoRq orderDtoRq) {
-        return UserOrderDto.mapping(userOrderService.createUserOrder(orderDtoRq));
+        UserOrder order = userOrderService.createUserOrder(orderDtoRq);
+        return modelMapper.map(order, UserOrderDto.class);
     }
 }

@@ -10,15 +10,11 @@ import lombok.ToString;
 import java.math.BigDecimal;
 import java.util.*;
 
-@ToString
 @Schema(description = "Описание отеля")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class HotelDto {
-    @Schema(description = "Название сервиса поставщика")
-    private String provider;
     @Schema(description = "Идентификатор отеля")
     private Integer id;
     @Schema(description = "Название отеля")

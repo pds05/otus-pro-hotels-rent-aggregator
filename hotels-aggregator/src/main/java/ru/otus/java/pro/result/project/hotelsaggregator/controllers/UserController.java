@@ -6,40 +6,26 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.java.pro.result.project.hotelsaggregator.dtos.CollectHotelDto;
-import ru.otus.java.pro.result.project.hotelsaggregator.dtos.HotelDtoRq;
 import ru.otus.java.pro.result.project.hotelsaggregator.dtos.UserDto;
 import ru.otus.java.pro.result.project.hotelsaggregator.dtos.UserDtoRq;
+import ru.otus.java.pro.result.project.hotelsaggregator.entities.UserProfile;
 import ru.otus.java.pro.result.project.hotelsaggregator.exceptions.ErrorDto;
-import ru.otus.java.pro.result.project.hotelsaggregator.services.SearchCollectorService;
 import ru.otus.java.pro.result.project.hotelsaggregator.services.UserProfileService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/aggregator")
-public class GeneralController {
+@RequestMapping("/api/v1/user")
+public class UserController {
+    public static final String USER_ID_PATTERN = "\\d{10}";
+
     private final UserProfileService userProfileService;
-    private final SearchCollectorService searchCollectorService;
-
-    @GetMapping(value = "/search/filter")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectHotelDto searchFilterHotels(@ModelAttribute HotelDtoRq hotelDtoRq) {
-        return searchCollectorService.searchHotels(hotelDtoRq);
-    }
-
-    @GetMapping(value = "/search")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectHotelDto searchHotels(
-            @Parameter(description = "Наименование населенного пункта", required = true, schema = @Schema(type = "string", maxLength = 50, example = "Москва"))
-            @NotBlank @RequestParam("city") String city) {
-        return searchCollectorService.searchHotelsInCity(city);
-    }
+    private final ModelMapper modelMapper;
 
     @Operation(summary = "Метод регистрации нового пользователя", responses = {
             @ApiResponse(description = "Успешный ответ", responseCode = "201",
@@ -50,11 +36,12 @@ public class GeneralController {
                             mediaType = MediaType.APPLICATION_JSON_VALUE))
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
+    @PostMapping()
     public UserDto createUserProfile(
             @Parameter(description = "Параметры пользователя", required = true)
             @Valid @RequestBody UserDtoRq userDtoRq) {
-        return UserDto.mapping(userProfileService.createUserProfile(userDtoRq));
+        UserProfile user = userProfileService.createUserProfile(userDtoRq);
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Operation(summary = "Запрос профиля пользователя по идентификатору", responses = {
@@ -66,9 +53,10 @@ public class GeneralController {
     @GetMapping("{id}")
     public UserDto getUserProfile(
             @Parameter(description = "Идентификатор пользователя", required = true)
-            @Pattern(regexp = "\\d{8}")
+            @Pattern(regexp = USER_ID_PATTERN)
             @PathVariable(name = "id") String userId) {
-        return UserDto.mapping(userProfileService.findUserProfile(userId));
+        UserProfile user = userProfileService.findUserProfile(userId);
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Operation(summary = "Отключение профиля пользователя", responses = {
@@ -79,7 +67,7 @@ public class GeneralController {
     @GetMapping("/delete/{id}")
     public void deleteUserProfile(
             @Parameter(description = "Идентификатор пользователя", required = true)
-            @Pattern(regexp = "\\d{8}")
+            @Pattern(regexp = USER_ID_PATTERN)
             @PathVariable(name = "id") String userId) {
         userProfileService.deleteUserProfile(userId);
     }
@@ -92,10 +80,9 @@ public class GeneralController {
     @GetMapping("/activate/{id}")
     public UserDto activateUserProfile(
             @Parameter(description = "Идентификатор пользователя", required = true)
-            @Pattern(regexp = "\\d{8}")
+            @Pattern(regexp = USER_ID_PATTERN)
             @PathVariable(name = "id") String userId) {
-        return UserDto.mapping(userProfileService.activateUserProfile(userId));
+        UserProfile user = userProfileService.activateUserProfile(userId);
+        return modelMapper.map(user, UserDto.class);
     }
-
-
 }

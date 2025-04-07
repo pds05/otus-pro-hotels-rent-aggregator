@@ -22,6 +22,7 @@ import ru.otus.java.pro.result.project.messageprocessor.configs.properties.Kafka
 import ru.otus.java.pro.result.project.messageprocessor.entities.Provider;
 import ru.otus.java.pro.result.project.messageprocessor.entities.ProviderApi;
 import ru.otus.java.pro.result.project.messageprocessor.enums.BusinessMethodEnum;
+import ru.otus.java.pro.result.project.messageprocessor.messaging.MessageTopicFilter;
 
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
@@ -47,6 +48,9 @@ public class KafkaConfig {
         factory.setConsumerFactory(consumerFactory);
         factory.setReplyTemplate(replyTemplate);
         factory.setCommonErrorHandler(errorHandler);
+        if (kafkaPropertyConfig.isAsyncModeEnabled()) {
+            factory.setRecordFilterStrategy(new MessageTopicFilter(providers));
+        }
 //        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
         return factory;
     }
@@ -60,7 +64,9 @@ public class KafkaConfig {
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         config.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-        config.put(JsonDeserializer.TYPE_MAPPINGS, "hotelDtoRq:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelDtoRq");
+        config.put(JsonDeserializer.TYPE_MAPPINGS, "hotelDtoRqMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelDtoRqMsg, " +
+                "userDtoRqMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserDtoRqMsg, " +
+                "userOrderCreateDtoRqMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserOrderCreateDtoRqMsg");
         if (kafkaPropertyConfig.isAsyncModeEnabled()) {
             log.info("Kafka running in aggregate replies mode (async): one request per topic");
         } else {
@@ -74,8 +80,10 @@ public class KafkaConfig {
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertyConfig.getBrokers());
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        config.put(JsonSerializer.TYPE_MAPPINGS, "providerResponseDto:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.ProviderResponseDto, " +
-                "hotelDto:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelDto");
+        config.put(JsonSerializer.TYPE_MAPPINGS, "hotelDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelDtoMsg, " +
+                        "hotelsDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelsDtoMsg, " +
+                "userDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserDtoMsg, " +
+                "userOrderDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserOrderDtoMsg");
         return config;
     }
 
