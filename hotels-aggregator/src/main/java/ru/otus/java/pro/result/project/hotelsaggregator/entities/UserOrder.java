@@ -7,6 +7,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.*;
+import ru.otus.java.pro.result.project.hotelsaggregator.enums.UserOrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -52,8 +53,9 @@ public class UserOrder {
     @Column(name = "date_out")
     private LocalDate dateOut;
 
-    @Column(name = "status", length = 10)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private UserOrderStatus status;
 
     @PositiveOrZero
     @Column(name = "order_price", precision = 10, scale = 2)

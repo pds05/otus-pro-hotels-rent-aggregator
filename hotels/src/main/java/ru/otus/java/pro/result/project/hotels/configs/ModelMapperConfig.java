@@ -54,6 +54,7 @@ public class ModelMapperConfig {
                 .addMapping(UserOrder::getDateIn, UserOrderDto::setDateIn)
                 .addMapping(UserOrder::getDateOut, UserOrderDto::setDateOut)
                 .addMapping(UserOrder::getDescription, UserOrderDto::setDescription)
+                .addMapping(UserOrder::getIsRefund, UserOrderDto::setRefund)
                 .addMappings(m -> m.using(dataRangeConverter).map(uo -> uo, UserOrderDto::setNights));
     }
 

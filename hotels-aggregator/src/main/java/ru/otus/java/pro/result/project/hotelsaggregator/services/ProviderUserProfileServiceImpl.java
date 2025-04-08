@@ -37,7 +37,7 @@ public class ProviderUserProfileServiceImpl implements ProviderUserProfileServic
         return providerUserProfileRepository.findByUserProfile_Id(userProfileId);
     }
 
-//    @Transactional
+    @Transactional
     @Override
     public ProviderUserProfile createProviderUserProfile(UserProfile userProfile, Provider provider) {
         log.debug("Creating provider user profile {}", userProfile);

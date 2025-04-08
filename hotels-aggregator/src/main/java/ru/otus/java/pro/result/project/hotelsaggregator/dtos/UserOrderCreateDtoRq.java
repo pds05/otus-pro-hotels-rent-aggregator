@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @DateRangeValid(before = "dateIn", after = "dateOut")
 public class UserOrderCreateDtoRq {
+
     public static final String HOTEL_ID_FIELD = "hotelId";
     public static final String RATE_ID_FIELD = "roomId";
     public static final String ROOM_ID_FIELD = "rateId";

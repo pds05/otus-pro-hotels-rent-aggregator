@@ -91,6 +91,7 @@ public class KafkaConfig {
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         config.put(JsonSerializer.TYPE_MAPPINGS, "hotelDtoRqMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.HotelDtoRqMsg, " +
                 "userDtoRqMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.UserDtoRqMsg, " +
+                "userOrderCancelDtoRqMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.UserOrderCancelDtoRqMsg, " +
                 "userOrderCreateDtoRqMsg:ru.otus.java.pro.result.project.hotelsaggregator.dtos.messages.UserOrderCreateDtoRqMsg");
         return config;
     }

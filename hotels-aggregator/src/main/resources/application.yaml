@@ -35,7 +35,7 @@ spring:
       reply-topic-suffix: reply
 #Включение режима 'async-mode' должно быть согласовано у производителя и всех потребителей
     async-mode:
-     enable: false
+     enable: true
      partial-on-timeout: true
      common-reply-timeout: 25S
      reply-timeout: 10S

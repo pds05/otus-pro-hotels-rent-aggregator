@@ -32,5 +32,6 @@ public class UserOrderDtoMsg extends AbstractMessageDto {
     private LocalDate dateOut;
     private Long nights;
     private String description;
+    private Boolean refund;
 
 }

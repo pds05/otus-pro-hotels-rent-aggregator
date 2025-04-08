@@ -30,5 +30,6 @@ public class UserOrderDtoMsg {
     private LocalDate dateOut;
     private Long nights;
     private String description;
+    private Boolean refund;
 
 }

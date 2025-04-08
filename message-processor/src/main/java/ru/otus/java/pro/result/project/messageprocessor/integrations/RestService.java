@@ -5,7 +5,9 @@ import ru.otus.java.pro.result.project.messageprocessor.entities.ProviderApi;
 
 public interface RestService {
 
-    <T> T get(ProviderApi api, AbstractProviderDto request);
+    <T> T get(ProviderApi api, AbstractProviderDto request, Class<T> responseClass);
+
+    <T> T getAsList(ProviderApi api, AbstractProviderDto request);
 
     <T> T post(ProviderApi api, AbstractProviderDto request, Class<T> responseClass);
 }

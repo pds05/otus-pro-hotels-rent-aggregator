@@ -3,9 +3,11 @@ package ru.otus.java.pro.result.project.hotelsaggregator.services;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.java.pro.result.project.hotelsaggregator.dtos.UserDtoUpdateRq;
 import ru.otus.java.pro.result.project.hotelsaggregator.exceptions.BusinessLogicException;
 import ru.otus.java.pro.result.project.hotelsaggregator.dtos.UserDtoRq;
 import ru.otus.java.pro.result.project.hotelsaggregator.entities.UserProfile;
@@ -19,8 +21,9 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserProfileRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
-//    @Transactional
+    @Transactional
     @Override
     public UserProfile createUserProfile(UserDtoRq userDtoRq) {
         log.info("Creating new user profile, {}", userDtoRq);
@@ -43,7 +46,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile findUserProfile(String id) {
+    public UserProfile getUserProfile(String id) {
         UserProfile userProfile = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not exist"));
         if (!userProfile.getIsActive()) {
             throw new BusinessLogicException("USER_BLOCKED", "User profile is blocked");
@@ -52,8 +55,13 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfile updateUserProfile(UserDtoRq userDtoRq) {
-        return null;
+    public UserProfile updateUserProfile(UserDtoUpdateRq userDtoUpdateRq) {
+        log.info("Updating user profile, {}", userDtoUpdateRq);
+        UserProfile userProfile = getUserProfile(userDtoUpdateRq.getId());
+        modelMapper.map(userDtoUpdateRq, userProfile);
+        repository.save(userProfile);
+        log.info("User profile is updated, {}", userProfile);
+        return userProfile;
     }
 
     @Override

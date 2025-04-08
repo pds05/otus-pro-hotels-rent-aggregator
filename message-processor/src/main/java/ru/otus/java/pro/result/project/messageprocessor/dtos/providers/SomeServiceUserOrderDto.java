@@ -15,7 +15,6 @@ public class SomeServiceUserOrderDto extends AbstractProviderDto {
 
     private String status;
     private String order;
-    private String providerOrder;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateOrdered;
     private BigDecimal price;
@@ -30,5 +29,6 @@ public class SomeServiceUserOrderDto extends AbstractProviderDto {
     private LocalDate dateOut;
     private Long nights;
     private String description;
+    private Boolean refund;
 
 }

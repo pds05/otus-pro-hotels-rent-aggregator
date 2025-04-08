@@ -66,6 +66,7 @@ public class KafkaConfig {
         config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         config.put(JsonDeserializer.TYPE_MAPPINGS, "hotelDtoRqMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelDtoRqMsg, " +
                 "userDtoRqMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserDtoRqMsg, " +
+                "userOrderCancelDtoRqMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserOrderCancelDtoRqMsg, " +
                 "userOrderCreateDtoRqMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserOrderCreateDtoRqMsg");
         if (kafkaPropertyConfig.isAsyncModeEnabled()) {
             log.info("Kafka running in aggregate replies mode (async): one request per topic");
@@ -81,7 +82,7 @@ public class KafkaConfig {
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         config.put(JsonSerializer.TYPE_MAPPINGS, "hotelDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelDtoMsg, " +
-                        "hotelsDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelsDtoMsg, " +
+                "hotelsDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.HotelsDtoMsg, " +
                 "userDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserDtoMsg, " +
                 "userOrderDtoMsg:ru.otus.java.pro.result.project.messageprocessor.dtos.messages.UserOrderDtoMsg");
         return config;

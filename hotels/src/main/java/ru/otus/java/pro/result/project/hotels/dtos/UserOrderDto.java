@@ -46,5 +46,7 @@ public class UserOrderDto {
     private Long nights;
     @Schema(description = "Дополнительная информация")
     private String description;
+    @Schema(description = "Возможность возврата оплаты", type = "boolean")
+    private Boolean refund;
 
 }

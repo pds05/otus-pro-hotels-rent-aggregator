@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class SomeServiceHotelDtoRq extends AbstractProviderDto{
+public class SomeServiceHotelDtoRq extends AbstractProviderDto {
 
     private String city;
     private String hotel;
