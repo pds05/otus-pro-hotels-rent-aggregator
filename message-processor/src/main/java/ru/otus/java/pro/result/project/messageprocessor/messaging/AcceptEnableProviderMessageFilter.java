@@ -27,9 +27,14 @@ public class AcceptEnableProviderMessageFilter implements RecordFilterStrategy<S
     public List<ConsumerRecord<String, Object>> filterBatch(List<ConsumerRecord<String, Object>> records) {
         if (kafkaPropertyConfig.isAsyncModeEnabled()) {
             List<ConsumerRecord<String, Object>> accept = records.stream()
-                    .filter(record ->
-                            providers.stream().anyMatch(provider -> provider.getPropertyName().equalsIgnoreCase(
-                                    new String(record.headers().lastHeader(KAFKA_PROVIDER_HEADER).value())))).toList();
+                    .filter(record -> {
+                        String providerHeader = new String(record.headers().lastHeader(KAFKA_PROVIDER_HEADER).value());
+                        if (!providerHeader.isBlank()) {
+                            return providers.stream().anyMatch(provider -> provider.getPropertyName().equalsIgnoreCase(providerHeader));
+                        } else {
+                            return true;
+                        }
+                    }).toList();
             return RecordFilterStrategy.super.filterBatch(accept);
         } else {
             return RecordFilterStrategy.super.filterBatch(records);

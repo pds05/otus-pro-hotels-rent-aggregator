@@ -2,7 +2,7 @@ spring:
   application:
     name: message-processor
   datasource:
-    url: jdbc:postgresql://localhost:5432/hotels_aggregator_db
+    url: jdbc:postgresql://db_postgres:5432/hotels_aggregator_db
     driver-class-name: org.postgresql.Driver
     username: ha_admin
     password: ha_admin_pass
@@ -15,10 +15,19 @@ spring:
       properties:
         hibernate:
           format_sql: true
+  flyway:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db_postgres:5432/hotels_aggregator_db
+    user: ha_admin
+    password: ha_admin_pass
+    locations: classpath:docker/db/migration
+    clean-disabled: false
+    enabled: true
+    baseline-on-migrate: true
   kafka:
     brokers:
-      - localhost:9091
-      - localhost:9092
+      - broker-1:29091
+      - broker-2:29092
     consumer-group: messageProcessorsGroup
     backoff-interval: 5S
     backoff-max-failure: 2
@@ -44,19 +53,19 @@ integration:
 # может не получать результат по некоторым сервисам
   providers:
     nifNif:
-      url: http://localhost:8081/api/v1/
+      url: http://hotels8090:8090/api/v1/
       read-timeout: 20s
       connect-timeout: 5s
       topic-prefix: nifNif
       enable: true
     nafNaf:
-      url: http://localhost:8081/api/v1/
+      url: http://hotels8091:8091/api/v1/
       read-timeout: 20s
       connect-timeout: 5s
       topic-prefix: nafNaf
-      enable: true
+      enable: false
     nufNuf:
-      url: http://localhost:8083/api/v1/
+      url: http://hotels8092:8092/api/v1/
       read-timeout: 20s
       connect-timeout: 5s
       topic-prefix: nufNuf

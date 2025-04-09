@@ -3,6 +3,7 @@ package ru.otus.java.pro.result.project.hotelsaggregator.configs;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -49,6 +50,13 @@ public class KafkaConfig {
     private final KafkaPropertyConfig kafkaPropertyConfig;
 
     private final List<Provider> providers;
+
+    @Bean
+    public KafkaAdmin kafkaAdmin() {
+        Map<String, Object> configs = new HashMap<>();
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertyConfig.getBrokers());
+        return new KafkaAdmin(configs);
+    }
 
     @Bean
     public ConsumerFactory<String, Object> consumerFactory() {
@@ -100,14 +108,13 @@ public class KafkaConfig {
     @Bean
     public AggregatingReplyingKafkaTemplate<String, Object, Object> kafkaAggregatingTemplate(
             ProducerFactory<String, Object> producerFactory,
-            ConcurrentMessageListenerContainer<String, Collection<ConsumerRecord<String, Object>>> repliesAggregateContainer,
-            List<Provider> providers) {
+            ConcurrentMessageListenerContainer<String, Collection<ConsumerRecord<String, Object>>> repliesAggregateContainer) {
 
         AtomicInteger releaseCount = new AtomicInteger();
         AggregatingReplyingKafkaTemplate<String, Object, Object> template = new AggregatingReplyingKafkaTemplate<>(
                 producerFactory, repliesAggregateContainer, (list, timeout) -> {
             releaseCount.incrementAndGet();
-            return list.size() == providers.size();
+            return !list.isEmpty();
         });
         template.setReturnPartialOnTimeout(kafkaPropertyConfig.getAsyncMode().isPartialOnTimeout());
         template.setDefaultReplyTimeout(kafkaPropertyConfig.getAsyncMode().getCommonReplyTimeout());
