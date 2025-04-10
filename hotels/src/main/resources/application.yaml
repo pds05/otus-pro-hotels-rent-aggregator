@@ -5,7 +5,7 @@ spring:
     name: hotels
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5450/hotels_db
+    url: jdbc:postgresql://localhost:5432/hotels_db
     username: hotels_admin
     password: hotels_admin
     hikari:
@@ -19,7 +19,7 @@ spring:
         format_sql: true
   flyway:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5450/hotels_db
+    url: jdbc:postgresql://localhost:5432/hotels_db
     user: hotels_admin
     password: hotels_admin
     locations: db/migration
