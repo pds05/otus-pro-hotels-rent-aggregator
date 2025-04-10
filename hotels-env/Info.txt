@@ -15,7 +15,7 @@
    Запустить создание образа из докер файла в директории /hotels-aggregator
     docker build . -t hotels-aggregator-app
 
-5. Собирать образ модуля Message-processor
+5. Собрать образ модуля Message-processor
    Запаковать приложение: maven goal package
    Запустить создание образа из докер файла в директории /message-processor
      docker build . -t message-processor-app

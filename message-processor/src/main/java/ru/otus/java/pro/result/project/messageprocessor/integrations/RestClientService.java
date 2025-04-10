@@ -55,8 +55,7 @@ public class RestClientService implements RestService {
             throw new ProviderException("REST_METHOD_ERROR", "Rest method " + api.getRestMethod() + " is not supported");
         }
         UriBuilder uriBuilder = UriComponentsBuilder.fromPath(api.getPath());
-        Map<String, String> map = objectMapper.convertValue(request, new TypeReference<>() {
-        });
+        Map<String, String> map = objectMapper.convertValue(request, new TypeReference<>() {});
         LinkedMultiValueMap<String, String> linkedMultiValueMap = new LinkedMultiValueMap<>();
         map.forEach(linkedMultiValueMap::add);
         URI uri = uriBuilder.queryParams(linkedMultiValueMap).build();
