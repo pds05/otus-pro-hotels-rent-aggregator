@@ -5,26 +5,22 @@
 2. Пересобрать образ POSTGRES на основе докер файла в /hotels-env/postgres
     docker build . -t postgres_locale_ru
 
-3. ПРЕДВАРИТЕЛЬНО ЗАПУСТИТЬ БД В DOCKER COMPOSE ПРЕЖДЕ, ЧЕМ СОБИРАТЬ ОБРАЗЫ МОДУЛЕЙ, ЧТОБЫ ПРОШЛИ ТЕСТЫ
-
-4. Собрать образ модуля Hotels
+3. Собрать образ модуля Hotels
    Запаковать приложение: maven goal package
    Запустить создание образа из докер файла в директории /hotels
     docker build . -t hotels-app
 
-5. Собрать образ модуля Hotels-aggregator
-   В процессе сборки может возникнуть ошибка доступа KafkaAdmin, который не может подключиться к Брокеру во время теста, т.к. кластер Kafka не запущен
-   В этом случае нужно подождать и по истечению попыток подключиться к брокеру сборка завершится.
+4. Собрать образ модуля Hotels-aggregator
    Запаковать приложение: maven goal package
    Запустить создание образа из докер файла в директории /hotels-aggregator
     docker build . -t hotels-aggregator-app
 
-6. Собирать образ модуля Message-processor
+5. Собирать образ модуля Message-processor
    Запаковать приложение: maven goal package
    Запустить создание образа из докер файла в директории /message-processor
      docker build . -t message-processor-app
 
-7. Запустить сервисы в docker compose
+6. Запустить сервисы в docker compose
 
 ##################################################
 
