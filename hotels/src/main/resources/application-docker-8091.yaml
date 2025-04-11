@@ -1,0 +1,39 @@
+server:
+  port: 8091
+spring:
+  application:
+    name: hotels
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db_postgres:5432/hotels_db?currentSchema=provider_8091
+    username: hotels_admin
+    password: hotels_admin
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 4
+    jpa:
+      show-sql: true
+      open-in-view: false
+      properties:
+       hibernate:
+        format_sql: true
+  flyway:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db_postgres:5432/hotels_db
+    user: hotels_admin
+    password: hotels_admin
+    locations: classpath:profile8091/db/migration
+    clean-disabled: false
+    default-schema: provider_8091
+    enabled: true
+    baseline-on-migrate: true
+springdoc:
+  swagger-ui:
+    path: /swagger
+logging:
+  level:
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+    org.zalando.logbook.Logbook: INFO
+    ru.otus: DEBUG

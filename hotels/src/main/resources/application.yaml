@@ -1,0 +1,39 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: hotels
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/hotels_db
+    username: hotels_admin
+    password: hotels_admin
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 4
+    jpa:
+      show-sql: true
+      open-in-view: false
+      properties:
+       hibernate:
+        format_sql: true
+  flyway:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/hotels_db
+    user: hotels_admin
+    password: hotels_admin
+    locations: db/migration
+    clean-disabled: false
+    enabled: true
+    baseline-on-migrate: true
+springdoc:
+  swagger-ui:
+    path: /swagger
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+    org.zalando.logbook.Logbook: TRACE
+    ru.otus: DEBUG
+

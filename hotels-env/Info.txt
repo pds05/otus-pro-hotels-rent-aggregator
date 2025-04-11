@@ -1,0 +1,40 @@
+### DOCKER - LAUNCH INSTRUCTIONS ###
+
+1. Скачать в докере образы Postgres (v15.0) и Kafka(bitnami)
+
+2. Пересобрать образ POSTGRES на основе докер файла в /hotels-env/postgres
+    docker build . -t postgres_locale_ru
+
+3. Собрать образ модуля Hotels
+   Запаковать приложение: maven goal package
+   Запустить создание образа из докер файла в директории /hotels
+    docker build . -t hotels-app
+
+4. Собрать образ модуля Hotels-aggregator
+   Запаковать приложение: maven goal package
+   Запустить создание образа из докер файла в директории /hotels-aggregator
+    docker build . -t hotels-aggregator-app
+
+5. Собрать образ модуля Message-processor
+   Запаковать приложение: maven goal package
+   Запустить создание образа из докер файла в директории /message-processor
+     docker build . -t message-processor-app
+
+6. Запустить сервисы в docker compose
+
+#################################################################
+
+    Описание API модуля Hotels в swagger:
+    http://localhost:8090/swagger
+
+    Описание API модуля Hotels-aggregator в swagger:
+    http://localhost:8095/swagger
+
+    Kafka-UI:
+    http://localhost:8080
+
+#################################################################
+
+Для запуска приложения на хосте предварительно запустить скрипты
+в директории hotels-env/postgres,
+которые создадут базы данных hotels_db и hotels_aggregator_db

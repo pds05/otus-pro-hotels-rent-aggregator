@@ -1,0 +1,71 @@
+server:
+  port: 8095
+spring:
+  application:
+    name: hotels-aggregator
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db_postgres:5432/hotels_aggregator_db
+    username: ha_admin
+    password: ha_admin_pass
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 4
+    jpa:
+      show-sql: true
+      open-in-view: false
+      properties:
+        hibernate:
+          format_sql: true
+  kafka:
+    brokers:
+      - broker-1:29091
+      - broker-2:29092
+    consumer-group: messageProcessorsGroup
+    send-timeout: 2S
+    common-reply-timeout: 25S
+    reply-timeout: 10S
+    reply-container-init-timeout: 10S
+    backoff-interval: 2S
+    backoff-max-failure: 2
+    topics:
+      partitions-count: 2
+      replicas-count: 2
+      request-topic-suffix: request
+      reply-topic-suffix: reply
+#Включение режима 'async-mode' должно быть согласовано у производителя и всех потребителей
+    async-mode:
+     enable: false
+     partial-on-timeout: false
+     common-reply-timeout: 25S
+     reply-timeout: 10S
+     topic-prefix: aggregate
+common:
+#Клиент регистрируется в сервисе через прокси-аккаунт
+  provider-user-profile:
+    email-by-random: true # default value
+    email-by-phone-number: true # если номер не указан, то подставляется логин
+    email-domain: otus.pro
+    email-user-length: 10
+#Интеграция работает только с включенными сервисами в базе и локальных настройках
+#Если локальные настройки интеграции не заданы, то по-умолчанию применяются активные сервисы из базы
+#Локальные настройки имеют более высокий приоритет, чем в базе
+integration:
+  providers:
+    enables:
+#      - nifNif
+#      - nafNaf
+    exclude:
+      - nufNuf
+springdoc:
+  swagger-ui:
+    path: /swagger
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
+#    #    org.hibernate.orm.jdbc.extract: TRACE
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#    org.zalando.logbook.Logbook: TRACE
+#    ru.otus: DEBUG
+

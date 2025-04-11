@@ -1,0 +1,169 @@
+services:
+
+  db_postgres:
+    image: postgres_locale_ru:latest
+    container_name: db_postgres
+    ports:
+      - "5450:5432"
+    networks:
+      - default
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-U", "postgres" ]
+      interval: 5s
+      timeout: 1s
+      retries: 3
+    volumes:
+      - ./postgres/:/docker-entrypoint-initdb.d
+
+  hotels8090:
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-8090"
+    ports:
+      - "8090:8090"
+    image: hotels-app:latest
+    container_name: hotels_8090
+    depends_on:
+      - db_postgres
+
+  hotels8091:
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-8091"
+    ports:
+      - "8091:8091"
+    image: hotels-app:latest
+    container_name: hotels_8091
+    depends_on:
+      - db_postgres
+
+  hotels8092:
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-8092"
+    ports:
+      - "8092:8092"
+    image: hotels-app:latest
+    container_name: hotels_8092
+    depends_on:
+      - db_postgres
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker-1:
+    image: confluentinc/cp-server:7.4.0
+    hostname: broker-1
+    container_name: broker-1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9091:9091"
+      - "9101:9101"
+      - "29091:29091"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-1:29091,PLAINTEXT_HOST://localhost:9091
+      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker-1:29091
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+
+  broker-2:
+    image: confluentinc/cp-server:7.4.0
+    hostname: broker-2
+    container_name: broker-2
+    depends_on:
+      - zookeeper
+      - broker-1
+    ports:
+      - "9092:9092"
+      - "9102:9102"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker-2:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9102
+      KAFKA_JMX_HOSTNAME: localhost
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker-2:29092
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:master
+    ports:
+      - 8080:8080
+    depends_on:
+      - broker-1
+      - broker-2
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: broker-1:29091,broker-2:29092
+      DYNAMIC_CONFIG_ENABLED: 'true'
+
+  message-processor:
+    environment:
+      #      - "SPRING_PROFILES_ACTIVE=docker-1-providers"
+      - "SPRING_PROFILES_ACTIVE=docker-2-providers"
+      #      - "SPRING_PROFILES_ACTIVE=docker-2-providers-async"
+      #      - "SPRING_PROFILES_ACTIVE=docker-all-providers"
+    image: message-processor-app:latest
+    container_name: message-processor
+    depends_on:
+      - db_postgres
+      - kafka-ui
+      - hotels8090 # активны интеграция с 2 сервисами
+      - hotels8091 # изменяя список связей с сервисами, нужно поменять активный профиль
+
+  hotels_aggregator:
+    environment:
+#      - "SPRING_PROFILES_ACTIVE=docker-1-providers"
+      - "SPRING_PROFILES_ACTIVE=docker-2-providers"
+#      - "SPRING_PROFILES_ACTIVE=docker-2-providers-async"
+#      - "SPRING_PROFILES_ACTIVE=docker-all-providers"
+    ports:
+      - "8095:8095"
+    image: hotels-aggregator-app:latest
+    container_name: hotels_aggregator
+    depends_on:
+      - db_postgres
+      - kafka-ui
+      - message-processor
+      - hotels8090 # активны интеграция с 2 сервисами
+      - hotels8091 # изменяя список связей с сервисами, нужно поменять активный профиль
+
+
+
+
+
+
+
